@@ -3,4 +3,4 @@ project(parser)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(parser main.cpp)
+add_executable(parser main.cpp Database.cpp Database.h)
