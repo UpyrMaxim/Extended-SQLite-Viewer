@@ -13,7 +13,7 @@ static int max_data_length = 65536;
 
 int main() {
     unsigned char buffer[max_data_length];
-    std::ifstream file("my_db.sqlite", std::ios_base::binary | std::ios::ate);
+    std::ifstream file("oracle-sample.db", std::ios_base::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     file.seekg(0, std::ios::beg);
 

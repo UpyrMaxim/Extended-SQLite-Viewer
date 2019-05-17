@@ -7,6 +7,8 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <string>
+#include <utility>
 #include <memory>
 #include <iostream>
 #include <algorithm>
@@ -15,6 +17,7 @@
 class Database {
 public:
     Database (unsigned char*);
+    ~Database();
     void print_header();
     void scan_freeblocks();
     struct SQLite_header;
@@ -99,8 +102,16 @@ struct Database::Btree_header{
     uint8_t start_freeblock_on_page[2];
     uint8_t cells_number[2];
     uint8_t cell_position[2];
-    uint8_t fragmented_free_bytes;
+    uint8_t number_of_freeblocks;
     uint8_t right_most_pointer[4];
+
+    void print_btree_header(){
+        std::cout << "Flag: " << (int)flag << std::endl;
+        std::cout << "Amount of cells on the page: " << get_cells_number() << std::endl;
+        std::cout << "Start of first cell: " << get_cell_position() << std::endl;
+        std::cout << "First freeblock position: "  << get_first_freeblock_position() << std::endl;
+        std::cout << "Freeblocks less then 3 bytes number : " << (int)number_of_freeblocks << std::endl;
+    }
 
     size_t get_cell_position() const
     {
@@ -111,7 +122,7 @@ struct Database::Btree_header{
     {
         return (start_freeblock_on_page[1]<<0)|(start_freeblock_on_page[0]<<8);
     }
-    size_t get_amount_of_pages() const
+    size_t get_cells_number() const
     {
         return (cells_number[1]<<0)|(cells_number[0]<<8);
     }

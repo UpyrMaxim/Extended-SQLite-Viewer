@@ -9,14 +9,21 @@ Database::Database(unsigned char *buffer) {
     db_header = reinterpret_cast<SQLite_header*>(buffer);
     auto pages_amount = db_header->get_pages_amount();
     auto page_size = db_header->get_database_page_size();
-    for (unsigned int i{0}; i < pages_amount; i++){
-        unsigned char* page;
-        for (unsigned int j{0}; j < page_size; j++ ){
-            page+=buffer[i*page_size + j];
+    for (int i{1}; i < pages_amount; i++){
+        auto page = new unsigned char[page_size];
+        for (int j{0}; j < page_size; j++ ){
+            page[j] = buffer[j + i*page_size];
         }
         pages.emplace_back(page);
     }
 }
+
+Database::~Database() {
+    for (auto it : pages){
+        delete[] it;
+    }
+}
+
 
 void Database::print_header() {
     std::cout << "The header string: \"SQLite format 3\\000\": " << db_header->get_header() << std::endl;
@@ -32,8 +39,10 @@ void Database::print_header() {
 
 void Database::scan_freeblocks() {
     for (auto it : pages){
-        auto btree_header =reinterpret_cast<Btree_header*>(it);
+        auto btree_header = reinterpret_cast<Btree_header*>(it);
+        btree_header->print_btree_header();
         if (btree_header->flag == 13){
+            std::cout << "First freeblock pos: " << btree_header->get_first_freeblock_position() << " First cell pos:" << btree_header->get_cell_position() << std::endl;
             std::for_each(it + btree_header->get_first_freeblock_position(),it + btree_header->get_cell_position(),[](unsigned char &ch){
                 if (ch != 0)
                     std::cout << ch;
