@@ -20,8 +20,8 @@ int main() {
 //    file.read((char*)&buffer[0], sizeof(sqlite_header));
     file.read((char*)&buffer[0], size);
     Database db(buffer);
-    db.print_header();
-    db.scan_freeblocks();
+    db.print_db_header();
+    auto vec = db.scan_freeblocks();
 
 
 

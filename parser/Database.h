@@ -12,21 +12,26 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <mutex>
+#include <thread>
+#include <omp.h>
 
 
 class Database {
 public:
     Database (unsigned char*);
     ~Database();
-    void print_header();
-    void scan_freeblocks();
+    void print_db_header();
+    std::vector<std::string> scan_freeblocks();
     struct SQLite_header;
     struct Btree_header;
     struct FreeBlock_header;
-    static size_t to_little_endian(uint8_t *big_endian, int size) ;
+    static size_t to_little_endian(uint8_t *big_endian, int size);
 private:
+    void parse_page(unsigned char*);
     SQLite_header *db_header;
     std::vector<unsigned char*> pages;
+    std::vector<std::string> deleted_data;
 };
 
 
@@ -84,7 +89,6 @@ struct Database::SQLite_header{
         return to_little_endian(total_number_freelist_pages,4);
     }
 };
-
 #pragma pack(pop)
 
 #pragma pack(push, 1)
@@ -132,7 +136,6 @@ struct Database::FreeBlock_header {
         return to_little_endian(length_of_freeblock,2);
     }
 };
-
 #pragma pack(pop)
 
 
