@@ -38,15 +38,35 @@ void Database::print_header() {
 }
 
 void Database::scan_freeblocks() {
+    int page_number = 2;
     for (auto it : pages){
+        std::cout << "Page number: " << page_number << std::endl;
+        page_number ++;
         auto btree_header = reinterpret_cast<Btree_header*>(it);
-        btree_header->print_btree_header();
         if (btree_header->flag == 13){
-            std::cout << "First freeblock pos: " << btree_header->get_first_freeblock_position() << " First cell pos:" << btree_header->get_cell_position() << std::endl;
-            std::for_each(it + btree_header->get_first_freeblock_position(),it + btree_header->get_cell_position(),[](unsigned char &ch){
-                if (ch != 0)
-                    std::cout << ch;
-                });
+            size_t freeblock_offset = btree_header->get_first_freeblock_position();
+            auto freeblock_header = reinterpret_cast<FreeBlock_header *>(it + freeblock_offset);
+            for (;;){
+                std::cout << "Data in freeblock: " << std::endl;
+                for (size_t i{0}; i < freeblock_header->get_length(); i++) {
+                    std::cout << it[freeblock_offset + i];
+                };
+                std::cout << std::endl;
+                freeblock_offset = freeblock_header->get_next_offset();
+                if (freeblock_offset == 0) break;
+                freeblock_header = reinterpret_cast<FreeBlock_header *>(it + freeblock_header->get_next_offset());
+            }
         }
     }
+}
+
+size_t Database::to_little_endian (uint8_t *big_endian, int size) {
+    size_t lil_endian = 0;
+    auto big_end = big_endian;
+    int offset = 0;
+    for (int i{size-1}; i >= 0; i--){
+        lil_endian |= (big_end[i]<<offset);
+        offset+=8;
+    }
+    return lil_endian;
 }

@@ -22,6 +22,8 @@ public:
     void scan_freeblocks();
     struct SQLite_header;
     struct Btree_header;
+    struct FreeBlock_header;
+    static size_t to_little_endian(uint8_t *big_endian, int size) ;
 private:
     SQLite_header *db_header;
     std::vector<unsigned char*> pages;
@@ -54,17 +56,6 @@ struct Database::SQLite_header{
     uint8_t reserved_for_epansion[20];
     uint32_t version_valid;
     uint8_t SQL_v_number[4];
-
-    size_t to_little_endian (uint8_t *big_endian, int size) const{
-        size_t lil_endian = 0;
-        auto big_end = big_endian;
-        int offset = 0;
-        for (int i{size-1}; i >= 0; i--){
-            lil_endian |= (big_end[i]<<offset);
-            offset+=8;
-        }
-        return lil_endian;
-    }
 
     std::string get_header() const
     {
@@ -127,6 +118,21 @@ struct Database::Btree_header{
         return (cells_number[1]<<0)|(cells_number[0]<<8);
     }
 };
+#pragma pack(pop)
+
+#pragma pack(push, 1)
+struct Database::FreeBlock_header {
+    uint8_t next_freeblock_offset[2];
+    uint8_t length_of_freeblock[2];
+
+    size_t get_next_offset(){
+        return to_little_endian(next_freeblock_offset,2);
+    };
+    size_t get_length(){
+        return to_little_endian(length_of_freeblock,2);
+    }
+};
+
 #pragma pack(pop)
 
 
