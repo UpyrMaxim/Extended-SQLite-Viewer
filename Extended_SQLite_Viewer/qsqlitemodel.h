@@ -1,0 +1,58 @@
+#ifndef QSQLITEMODEL_H
+#define QSQLITEMODEL_H
+
+#include <QAbstractTableModel>
+#include <QtSql>
+#include <QObject>
+
+#include "dbasesingleton.h"
+
+class QSQLiteModel : public QAbstractTableModel
+{
+    Q_OBJECT
+
+     //Q_PROPERTY(QString tableName READ getTableName WRITE settableName NOTIFY tableNameWasChanged) // свойства для qml???^)
+public:
+    explicit QSQLiteModel(QObject *parent = nullptr);
+    ~QSQLiteModel() override;
+    // Header:
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+
+    bool setHeaderData(int section, Qt::Orientation orientation, const QVariant &value, int role = Qt::EditRole) override;
+
+    // Basic functionality:
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+
+    // Editable:
+    bool setData(const QModelIndex &index, const QVariant &value,
+                 int role = Qt::EditRole) override;
+
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
+
+
+
+//    QHash<int, QByteArray> roleNames() const override;
+
+
+    Q_INVOKABLE int setDataBase(const QString &tableName);
+//    Q_INVOKABLE QSqlDatabase* getDataConection();
+
+signals:
+      void tableNameWasChanged();
+
+private:
+        bool setTableContent();
+public slots:
+
+private:
+    QString TableName;
+    bool dataBaseActive = false;
+    int rowCountVal;
+    int columnCountVal;
+    QStringList * TableData;
+};
+
+#endif // QSQLITEMODEL_H

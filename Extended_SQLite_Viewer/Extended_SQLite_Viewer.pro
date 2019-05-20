@@ -1,4 +1,6 @@
 QT += quick
+QT += sql
+
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -6,14 +8,17 @@ CONFIG += c++11
 # depend on your compiler). Refer to the documentation for the
 # deprecated API to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
-
+DEFINES +=  QT_DEBUG_PLUGINS
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-        main.cpp
+        dbasesingleton.cpp \
+        main.cpp \
+        qsqlitemodel.cpp \
+        qsqlitetablelist.cpp
 
 RESOURCES += qml.qrc
 
@@ -27,3 +32,8 @@ QML_DESIGNER_IMPORT_PATH =
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+HEADERS += \
+    dbasesingleton.h \
+    qsqlitemodel.h \
+    qsqlitetablelist.h
