@@ -1,7 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Window 2.12
 import QtQuick.Controls 2.5
-import QtQuick.Controls 1.4 as Old
 import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 
@@ -15,18 +14,30 @@ Window {
     visible: true
     width: 640
 
+    minimumHeight: 480
+    minimumWidth: 640
+
     height: 480
+    color: "#feffe0"
     title: qsTr("SQLite Viewer")
+
 
 
     Button {
         id: mainMenuButton
-        text: "Menu"
-        x: 8
-        y: 6
-        implicitWidth: 150
-        implicitHeight: 30
+        x: 22
+        y: 5
 
+
+        text: "Menu"
+        background: Rectangle {
+            implicitWidth: 150
+            implicitHeight: 30
+            color: "#80b1dd"
+            border.width: control.activeFocus ? 2 : 1
+            border.color: "#888"
+            radius: 4
+        }
         onClicked: mainMenu.open();
     }
 
@@ -66,8 +77,9 @@ Window {
         id: tableListField
         x: 22
         y: tablesName.height  + tablesName.y
+        color: window.color
         width: 150
-        height: parent.height
+        height: 410
 
         ListView{
             anchors.fill: parent
@@ -85,36 +97,20 @@ Window {
                     text: display
                     Layout.fillWidth: true
 
+                    background: Rectangle { color: mouseArea.containsMouse ? "#CEDCDD" : "#cedcec" }
                     MouseArea {
+                        id: mouseArea
                         anchors.fill: parent
+                        hoverEnabled: true
                         onClicked:{
                            tablelContentMode.setDataBase(display)
+                           leftFieldHeaderText.text = display + " data:";
                         }
                     }
                 }
             }
         }
-//        TableView {
-//            id: mainTableView
-//            height: 20
-//            anchors.fill: parent
-//            columnSpacing: 1
-//            rowSpacing: 1
-//            clip: true
 
-//            model: SQliteModel {
-//                id: myModel
-//            }
-
-//            delegate: Rectangle {
-//                color: "#CEDCDD"
-//                implicitWidth: 150
-//                implicitHeight: 20
-//                Text {
-//                    text: display
-//                }
-//            }
-//         }
     }
 
     FileDialog {
@@ -134,78 +130,163 @@ Window {
         }
     }
 
-//    Rectangle {
-//        id: tablesName1
-//        x: 185
-//        y: 41
-//        width: 429
-//        height: 20
-//        color: "#ececec"
-//        Text {
-//            text: "Table data:"
-//        }
-//        implicitHeight: 20
-//        implicitWidth: 150
-//    }
-
     Rectangle {
         id: tableColumns
         x: 185
-        y: tablesName1.y + tablesName1.height +1
+        y: 5
         width: 429
         height: 20
-        color: "#cedcec"
-        Text {
-            text: "Table data:"
-        }
-        implicitHeight: 20
-        implicitWidth: 150
+        color: window.color
+        TabBar {
+            id: bar
+            width: parent.width
+            height: parent.height
+
+            TabButton {
+                height: parent.height
+                text: qsTr("TableData")
+            }
+            TabButton {
+                height: parent.height
+                text: qsTr("Formated RAW data")
+            }
+            TabButton {
+                height: parent.height
+                text: qsTr("hex")
+            }
+
+            onCurrentIndexChanged: {
+                  switch (currentIndex)
+                  {
+                  case 0:
+                      tableContentFields.visible = true;
+                      rawDataField.visible = false;
+                      hexDataField.visible = false;
+                      break;
+                  case 1:
+                      tableContentFields.visible = false;
+                      rawDataField.visible = true;
+                      hexDataField.visible = false;
+                      break;
+                  case 2:
+                      tableContentFields.visible = false;
+                      rawDataField.visible = false;
+                      hexDataField.visible = true;
+                      break;
+                  }
+             }
+         }
     }
+
 
     Rectangle {
         id: tableContentFields
+        visible: true
         x: 185
-        y: tableColumns.y + tableColumns.height +1
-        width: 429
-        height: parent.height
-//        TableView {
-//            height: 20
-//            model: mainTableView.model
-//            rowSpacing: 1
-//            anchors.fill: parent
-//            clip: true
-//            columnSpacing: 1
-//            delegate: Rectangle {
-//                color: "#cedcdd"
-//                Text {
-//                    text: display
-//                }
-//                implicitHeight: 20
-//                implicitWidth: parent.width
-//            }
-//        }
+        y: 40
+        width: window.width - tableListField.width - 40;
+        height:window.height - 35;
+        color: "#feffe0"
+
         TableView {
             id: mainTableView
             height: 20
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 0
+            anchors.leftMargin: 0
+            topMargin: columnsHeader.implicitHeight
+            leftMargin: rowsHeader.implicitWidth
             anchors.fill: parent
             columnSpacing: 1
             rowSpacing: 1
             clip: true
-
             model: SQliteModel {
                 id: tablelContentMode
             }
 
             delegate: Rectangle {
+                id: tableRowTextField
                 color: "#CEDCDD"
                 implicitWidth: 150
                 implicitHeight: 20
+                width: 150
+                height: 20
                 Text {
+                    id: tableColumn
                     text: display
                 }
             }
-         }
+
+            Row {
+                id: columnsHeader
+                y: mainTableView.contentY
+                z: 3
+
+                Repeater {
+                    model: mainTableView.columns
+                    Label {
+                        width: 151
+                        height: 26
+                        text: tablelContentMode.headerData(modelData, Qt.Horizontal)
+                        color: '#333333'
+                        padding: 10
+                        verticalAlignment: Text.AlignVCenter
+
+                        background: Rectangle { color: "#aaaaaa" }
+                    }
+                }
+            }
+            Column {
+                id: rowsHeader
+                x: mainTableView.contentX
+                z: 2
+                Repeater {
+                    model: mainTableView.rows
+                   Button {
+                       width: 10
+                       height: 21
+                        onClicked: {
+                            tablelContentMode.removeRow(modelData);
+                        }
+                       Text {
+                           id: delBtnText
+                           text: qsTr("X")
+                           color: "#ff0000"
+                           anchors.centerIn: parent
+                       }
+                   }
+                }
+            }
+        }
     }
+
+    Rectangle {
+        id: rawDataField
+        visible: false
+        x: 185
+        y: 40
+        width: window.width - tableListField.width - 40;
+        height:window.height - 35;
+        color: "#feffe0"
+        Text {
+            text: "RAW DATA FIELD"
+            anchors.centerIn: parent
+        }
+   }
+
+    Rectangle {
+        id: hexDataField
+        visible: false
+        x: 185
+        y: 40
+        width: window.width - tableListField.width - 40;
+        height:window.height - 35;
+        color: "#feffe0"
+        Text {
+            text: "HEX DATA FIELD"
+            anchors.centerIn: parent
+        }
+   }
 
     // на лінухі і вінді по різному визначається url
     function urlToPath(urlString) {
@@ -219,15 +300,3 @@ Window {
         return decodeURIComponent(s);
     }
 }
-
-
-
-
-
-
-
-
-/*##^## Designer {
-    D{i:1;anchors_height:19;anchors_width:19;anchors_x:0;anchors_y:0}
-}
- ##^##*/
