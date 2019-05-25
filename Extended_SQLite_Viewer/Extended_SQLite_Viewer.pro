@@ -17,6 +17,7 @@ DEFINES +=  QT_DEBUG_PLUGINS
 SOURCES += \
         dbasesingleton.cpp \
         main.cpp \
+        qhexconvertor.cpp \
         qsqlitemodel.cpp \
         qsqlitetablelist.cpp
 
@@ -35,5 +36,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     dbasesingleton.h \
+    qhexconvertor.h \
     qsqlitemodel.h \
     qsqlitetablelist.h

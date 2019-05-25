@@ -6,6 +6,7 @@ import QtQuick.Layouts 1.3
 
 import SQliteModel 1.0
 import SQliteTableList 1.0
+import QHexConvertor 1.0
 
 
 
@@ -153,6 +154,13 @@ Window {
             TabButton {
                 height: parent.height
                 text: qsTr("hex")
+                QHexConvertor {
+                    id: hexConvertor
+                }
+                onClicked: {
+                  console.log(hexConvertor.getHexData(" output " + urlToPath(fileDialog.fileUrls.toString())));
+                  hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()));
+                }
             }
 
             onCurrentIndexChanged: {
@@ -279,12 +287,19 @@ Window {
         visible: false
         x: 185
         y: 40
-        width: window.width - tableListField.width - 40;
+        width: 650 - tableListField.width - 40;
         height:window.height - 35;
         color: "#feffe0"
-        Text {
-            text: "HEX DATA FIELD"
-            anchors.centerIn: parent
+        ScrollView {
+            id: view
+            anchors.fill: parent
+            clip: true
+            TextArea {
+                id: hexText
+                readOnly: true
+                font: fixedFont
+                text: "HEX DATA FIELD"
+            }
         }
    }
 
