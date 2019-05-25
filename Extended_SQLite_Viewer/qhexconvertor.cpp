@@ -26,12 +26,14 @@ QString QHexConvertor::getHexData(const QString &FilePath)
             FileGuard.getFile().read(*memblock.get(), size);
 
             bitArray.setRawData(*memblock.get(),size);
+            QString basic_val = QString("%1").arg(0, 10, 16) + " | ";
+            QString resultStr = basic_val + bitArray.toHex(' ');
 
-            QString resultStr = bitArray.toHex(' ');
-            int step = 48;
-            for (int i = step; i <= resultStr.size(); i+=step+1)
-                resultStr.insert(i, '\n');
-            qDebug() << resultStr;
+            int offset = 0;
+            int step = 48 + basic_val.size();
+            for (int i = step; i <= resultStr.size(); i+=step + 1){
+                resultStr.insert(i, QString("\n%1").arg(++offset * 16, 10, 16) + " | ");
+            }
 
             return resultStr.toUpper();
         }

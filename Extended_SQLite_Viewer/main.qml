@@ -13,10 +13,10 @@ import QHexConvertor 1.0
 Window {
     id: window
     visible: true
-    width: 640
+    width: 800
 
     minimumHeight: 480
-    minimumWidth: 640
+    minimumWidth: 800
 
     height: 480
     color: "#feffe0"
@@ -287,7 +287,7 @@ Window {
         visible: false
         x: 185
         y: 40
-        width: 650 - tableListField.width - 40;
+        width: 1000 - tableListField.width - 40;
         height:window.height - 35;
         color: "#feffe0"
         ScrollView {
