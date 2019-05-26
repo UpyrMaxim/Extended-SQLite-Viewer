@@ -24,16 +24,18 @@ public:
     ~Database();
     void print_db_header();
     void identify_tables();
-    std::vector<std::string> scan_freeblocks();
+    std::vector<std::pair<int,std::string>> scan_freeblocks();
+    std::vector<std::string> get_deleted_data_from_table (std::string);
     static size_t to_little_endian(uint8_t *big_endian, int size);
 private:
     struct SQLite_header;
     struct Btree_header;
     struct FreeBlock_header;
-    void parse_page(unsigned char*);
+    void parse_page(int);
     SQLite_header *db_header;
     std::vector<unsigned char*> pages;
-    std::vector<std::string> deleted_data;
+    std::vector<std::pair<int,std::string>> deleted_data;
+    std::vector<std::pair<int,std::string>> tables_pages;
 };
 
 
