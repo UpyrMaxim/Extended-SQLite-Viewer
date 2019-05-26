@@ -7,8 +7,13 @@
 //#include "DB_Structures.cpp"
 
 
-Database::Database(unsigned char *buffer) {
-    db_header = reinterpret_cast<SQLite_header*>(buffer);
+Database::Database(std::string file_name) {
+    std::unique_ptr<unsigned char[]> buffer(new unsigned char[1024*1024*100]);
+    std::ifstream file(file_name, std::ios_base::binary | std::ios::ate);
+    std::streamsize size = file.tellg();
+    file.seekg(0, std::ios::beg);
+    file.read((char*)&buffer[0], size);
+    db_header = reinterpret_cast<SQLite_header*>(buffer.get());
     unsigned long pages_amount = db_header->get_pages_amount();
     auto page_size = db_header->get_database_page_size();
     for (size_t i{0}; i < pages_amount; i++){

@@ -12,6 +12,7 @@
 #include <memory>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
 #include <mutex>
 #include <thread>
 #include <omp.h>
@@ -20,7 +21,7 @@
 
 class Database {
 public:
-    Database (unsigned char*);
+    Database (std::string);
     ~Database();
     void print_db_header();
     void identify_tables();
