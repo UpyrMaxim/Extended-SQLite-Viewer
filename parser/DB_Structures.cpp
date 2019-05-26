@@ -1,41 +1,20 @@
 //
-// Created by denis on 15.05.19.
+// Created by denis on 24.05.19.
 //
 
-#ifndef PARSER_DATABASE_H
-#define PARSER_DATABASE_H
-#include <string>
 #include <sstream>
-#include <vector>
-#include <string>
-#include <utility>
-#include <memory>
-#include <iostream>
-#include <algorithm>
-#include <mutex>
-#include <thread>
-#include <omp.h>
-//#include "DB_Structures.cpp"
+#include "Database.h"
 
-
-class Database {
-public:
-    Database (unsigned char*);
-    ~Database();
-    void print_db_header();
-    void identify_tables();
-    std::vector<std::string> scan_freeblocks();
-    static size_t to_little_endian(uint8_t *big_endian, int size);
-private:
-    struct SQLite_header;
-    struct Btree_header;
-    struct FreeBlock_header;
-    void parse_page(unsigned char*);
-    SQLite_header *db_header;
-    std::vector<unsigned char*> pages;
-    std::vector<std::string> deleted_data;
-};
-
+size_t to_little_endian (uint8_t *big_endian, int size) {
+    size_t lil_endian = 0;
+    auto big_end = big_endian;
+    int offset = 0;
+    for (int i{size-1}; i >= 0; i--){
+        lil_endian |= (big_end[i]<<offset);
+        offset+=8;
+    }
+    return lil_endian;
+}
 
 #pragma pack(push, 1)
 struct Database::SQLite_header{
@@ -140,5 +119,3 @@ struct Database::FreeBlock_header {
 };
 #pragma pack(pop)
 
-
-#endif //PARSER_DATABASE_H

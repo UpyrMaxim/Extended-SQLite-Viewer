@@ -2,15 +2,16 @@
 // Created by denis on 15.05.19.
 //
 
-#include <shared_mutex>
+//#include <shared_mutex>
 #include "Database.h"
+//#include "DB_Structures.cpp"
 
 
 Database::Database(unsigned char *buffer) {
     db_header = reinterpret_cast<SQLite_header*>(buffer);
-    auto pages_amount = db_header->get_pages_amount();
+    unsigned long pages_amount = db_header->get_pages_amount();
     auto page_size = db_header->get_database_page_size();
-    for (size_t i{1}; i < pages_amount; i++){
+    for (size_t i{0}; i < pages_amount; i++){
         auto page = new unsigned char[page_size];
         for (size_t j{0}; j < page_size; j++ ){
             page[j] = buffer[j + i*page_size];
@@ -65,7 +66,7 @@ void Database::parse_page(unsigned char* page){
 std::vector<std::string> Database::scan_freeblocks() {
     omp_set_num_threads(std::thread::hardware_concurrency());
 #pragma omp parallel for
-    for (size_t it = 0;it < db_header->get_pages_amount()-1; it++){
+    for (size_t it = 0;it < db_header->get_pages_amount(); it++){
     parse_page(pages[it]);
     }
     return deleted_data;
@@ -81,3 +82,57 @@ size_t Database::to_little_endian (uint8_t *big_endian, int size) {
     }
     return lil_endian;
 }
+
+
+void Database::identify_tables() {
+    std::string header_page;
+    for (size_t i{0}; i < 4096; i++ ){
+        header_page += pages[0][i];
+    }
+    std::vector<std::pair<int,std::string>> tables_map;
+    size_t found = 0;
+    while (found != std::string::npos){
+        found = header_page.find("CREATE TABLE",found + 1);
+        if (found!=std::string::npos) {
+            tables_map.emplace_back(std::pair<int, std::string>((int) header_page[found - 1],
+                    header_page.substr(found + 12, header_page.find('(', found)  - found - 12 )));
+        }
+    }
+
+    bool unchecked_pages = true;
+
+//    while(unchecked_pages){
+//        for (auto it : tables_map){
+//            auto page = pages[it.first-1];
+//            auto page_header = reinterpret_cast<Btree_header*>(page);
+//            if (page_header->flag == 13) {
+//                unchecked_pages = false;
+//            }
+//            if (page_header->flag == 5){
+//                size_t cell_number = page_header->get_cells_number();
+//                size_t cells_offset[cell_number];
+//                for (size_t i{0}; i < cell_number; i++){
+//                    cells_offset[i] = (page[13+i*2] << 0) | (page[14+i*2] << 8);
+//                }
+//
+//                for (auto i : cells_offset) {
+//                    int child_page_number =
+//                            (page[i] << 0) | (page[i + 1] << 8) | (page[i + 2] << 16) |
+//                            (page[i + 3] << 24);
+//                    tables_map.emplace_back(std::pair<int, std::string>(child_page_number - 1, it.second));
+//                    unchecked_pages = true;
+//                }
+//                it.first = 0;
+//            }
+//        }
+//    }
+
+
+    for (auto it : tables_map){
+        std::cout << "Binded page: " << it.first << " Table name:" << it.second << std::endl;
+    }
+
+
+}
+
+
