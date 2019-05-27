@@ -11,10 +11,11 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9d2780d6-78c5-465e-b774-cac65ad7652f" name="Default Changelist" comment="">
+    <list default="true" id="9d2780d6-78c5-465e-b774-cac65ad7652f" name="Default Changelist" comment="Constructor was changed to get file_name as a argument">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Database.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Database.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Database.h" beforeDir="false" afterPath="$PROJECT_DIR$/Database.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -78,43 +79,44 @@
           <entry key="project.open.time.41" value="2" />
           <entry key="project.open.time.42" value="1" />
           <entry key="project.open.time.43" value="2" />
+          <entry key="project.open.time.45" value="1" />
           <entry key="project.open.time.46" value="1" />
           <entry key="project.open.time.48" value="1" />
           <entry key="project.open.time.6" value="1" />
           <entry key="project.open.time.65" value="1" />
-          <entry key="project.opened" value="13" />
+          <entry key="project.opened" value="14" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="7118" />
-          <entry key="h" value="1289" />
+          <entry key="cpp" value="7685" />
+          <entry key="h" value="1424" />
           <entry key="hpp" value="60" />
           <entry key="mm" value="5" />
           <entry key="sql" value="25" />
-          <entry key="txt" value="149" />
+          <entry key="txt" value="275" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CMakeLists.txt" value="44" />
-          <entry key="ObjectiveC" value="8472" />
-          <entry key="PLAIN_TEXT" value="105" />
+          <entry key="ObjectiveC" value="9174" />
+          <entry key="PLAIN_TEXT" value="231" />
           <entry key="Scratch" value="25" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="cpp" value="3" />
-          <entry key="h" value="2" />
-          <entry key="parser (disassembly)" value="1" />
+          <entry key="h" value="3" />
+          <entry key="parser (disassembly)" value="2" />
           <entry key="sql" value="1" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.open">
         <counts>
-          <entry key="Disassembly" value="1" />
-          <entry key="ObjectiveC" value="5" />
+          <entry key="Disassembly" value="2" />
+          <entry key="ObjectiveC" value="6" />
           <entry key="Scratch" value="1" />
         </counts>
       </usages-collector>
@@ -134,12 +136,11 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Database.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="258">
-              <caret line="36" column="44" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
+            <state relative-caret-position="1689">
+              <caret line="127" column="5" lean-forward="true" selection-start-line="127" selection-start-column="5" selection-end-line="127" selection-end-column="5" />
               <folding>
-                <element signature="e#837#2362#1" />
-                <element signature="e#2405#3450#1" />
-                <element signature="e#3493#3787#1" />
+                <element signature="e#92#109#0" expanded="true" />
+                <element signature="e#2792#3256#0" />
               </folding>
             </state>
           </provider>
@@ -148,8 +149,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Database.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="134">
-              <caret line="144" column="71" selection-start-line="144" selection-start-column="71" selection-end-line="144" selection-end-column="71" />
+            <state relative-caret-position="-300">
+              <caret line="119" column="80" lean-forward="true" selection-start-line="119" selection-start-column="80" selection-end-line="119" selection-end-column="80" />
+              <folding>
+                <element signature="e#945#1863#0" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -157,8 +161,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
-              <caret line="21" selection-start-line="21" selection-end-line="21" />
+            <state relative-caret-position="180">
+              <caret line="12" column="26" lean-forward="true" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="26" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -178,9 +182,9 @@
         <option value="$PROJECT_DIR$/DB_Structures.hpp" />
         <option value="$PROJECT_DIR$/DB_Structures.cpp" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/main.cpp" />
         <option value="$PROJECT_DIR$/Database.h" />
         <option value="$PROJECT_DIR$/Database.cpp" />
+        <option value="$PROJECT_DIR$/main.cpp" />
       </list>
     </option>
   </component>
@@ -247,9 +251,15 @@
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
+    <configuration name="parserlib" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS_2="true" PROJECT_NAME="parser" TARGET_NAME="parserlib" CONFIG_NAME="Debug">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
     <list>
       <item itemvalue="Application.Build All" />
       <item itemvalue="Application.parser" />
+      <item itemvalue="Application.parserlib" />
     </list>
   </component>
   <component name="SvnConfiguration">
@@ -276,7 +286,8 @@
       <workItem from="1558622005793" duration="528000" />
       <workItem from="1558689270073" duration="8331000" />
       <workItem from="1558793725782" duration="5897000" />
-      <workItem from="1558869459056" duration="4283000" />
+      <workItem from="1558869459056" duration="6058000" />
+      <workItem from="1558957085038" duration="3776000" />
     </task>
     <task id="LOCAL-00001" summary="Split into pages bug fixed">
       <created>1558093462256</created>
@@ -299,11 +310,25 @@
       <option name="project" value="LOCAL" />
       <updated>1558872120130</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="method to get deleted data from chosen table added">
+      <created>1558873831302</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1558873831302</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Constructor was changed to get file_name as a argument">
+      <created>1558874890050</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1558874890050</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="77388000" />
+    <option name="totallyTimeSpent" value="82939000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -318,13 +343,13 @@
     <frame x="0" y="0" width="1366" height="732" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.175" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1780303" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.38360655" />
-      <window_info active="true" anchor="bottom" id="Debug" order="3" visible="true" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.38360655" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3295082" />
@@ -351,23 +376,11 @@
     <MESSAGE value="Split into pages bug fixed" />
     <MESSAGE value="free_block scanning method working correct now" />
     <MESSAGE value="table identify added" />
-    <option name="LAST_COMMIT_MESSAGE" value="table identify added" />
+    <MESSAGE value="method to get deleted data from chosen table added" />
+    <MESSAGE value="Constructor was changed to get file_name as a argument" />
+    <option name="LAST_COMMIT_MESSAGE" value="Constructor was changed to get file_name as a argument" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>20</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>21</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="pages" language="ObjectiveC" />
@@ -406,10 +419,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file:///usr/include/c++/7/bits/stl_construct.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="95">
+          <caret line="107" selection-start-line="107" selection-end-line="107" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        <state relative-caret-position="180">
+          <caret line="12" column="26" lean-forward="true" selection-start-line="12" selection-start-column="26" selection-end-line="12" selection-end-column="26" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
@@ -418,20 +438,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Database.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="258">
-          <caret line="36" column="44" selection-start-line="36" selection-start-column="44" selection-end-line="36" selection-end-column="44" />
+        <state relative-caret-position="1689">
+          <caret line="127" column="5" lean-forward="true" selection-start-line="127" selection-start-column="5" selection-end-line="127" selection-end-column="5" />
           <folding>
-            <element signature="e#837#2362#1" />
-            <element signature="e#2405#3450#1" />
-            <element signature="e#3493#3787#1" />
+            <element signature="e#92#109#0" expanded="true" />
+            <element signature="e#2792#3256#0" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Database.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="134">
-          <caret line="144" column="71" selection-start-line="144" selection-start-column="71" selection-end-line="144" selection-end-column="71" />
+        <state relative-caret-position="-300">
+          <caret line="119" column="80" lean-forward="true" selection-start-line="119" selection-start-column="80" selection-end-line="119" selection-end-column="80" />
+          <folding>
+            <element signature="e#945#1863#0" />
+          </folding>
         </state>
       </provider>
     </entry>

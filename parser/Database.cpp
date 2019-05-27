@@ -2,18 +2,17 @@
 // Created by denis on 15.05.19.
 //
 
-//#include <shared_mutex>
 #include "Database.h"
 //#include "DB_Structures.cpp"
 
 
 Database::Database(std::string file_name) {
-    std::unique_ptr<unsigned char[]> buffer(new unsigned char[1024*1024*100]);
     std::ifstream file(file_name, std::ios_base::binary | std::ios::ate);
     std::streamsize size = file.tellg();
+    buffer.resize(size);
     file.seekg(0, std::ios::beg);
-    file.read((char*)&buffer[0], size);
-    db_header = reinterpret_cast<SQLite_header*>(buffer.get());
+    file.read(buffer.data(), size);
+    db_header = reinterpret_cast<SQLite_header*>(buffer.data());
     unsigned long pages_amount = db_header->get_pages_amount();
     auto page_size = db_header->get_database_page_size();
     for (size_t i{0}; i < pages_amount; i++){
@@ -45,36 +44,37 @@ void Database::print_db_header() {
 }
 
 void Database::parse_page(int number){
-    auto btree_header = reinterpret_cast<Btree_header*>(pages[number]);
+    auto page = pages[number];
+    auto btree_header = reinterpret_cast<Btree_header*>(page);
     if (btree_header->flag == 13){
         std::string parsed_data;
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
-        auto freeblock_header = reinterpret_cast<FreeBlock_header *>(pages[number] + freeblock_offset);
-#pragma  omp critical (first)
-        std::cout << "Deleted data on freeblock:" << std::endl;
+        auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
         for (;;) {
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
-                std::cout << pages[number][freeblock_offset + i];
-                parsed_data += pages[number][freeblock_offset + i];
+                parsed_data += page[freeblock_offset + i];
             };
             std::cout << std::endl;
             freeblock_offset = freeblock_header->get_next_offset();
             if (freeblock_offset == 0) break;
-            freeblock_header = reinterpret_cast<FreeBlock_header *>(pages[number] + freeblock_header->get_next_offset());
+            freeblock_header = reinterpret_cast<FreeBlock_header*>(page + freeblock_header->get_next_offset());
         }
-#pragma omp critical (second)
-        deleted_data.emplace_back(std::pair<int,std::string>(number,parsed_data));
+#pragma omp critical
+        deleted_data.emplace_back(std::pair<int,std::string>(number + 1,parsed_data));
     }
 }
 
 
-std::vector<std::pair<int,std::string>> Database::scan_freeblocks() {
+void Database::scan_freeblocks() {
     omp_set_num_threads(std::thread::hardware_concurrency());
-#pragma omp parallel for
-    for (size_t it = 0;it < db_header->get_pages_amount(); it++){
+    #pragma omp parallel for
+    for (int it = 0;it < db_header->get_pages_amount(); it++){
     parse_page(it);
     }
-    return deleted_data;
+
+    for (auto it : deleted_data){
+        std::cout << "Page: " << it.first << " Data from page: " << it.second << std::endl;
+    }
 }
 
 size_t Database::to_little_endian (uint8_t *big_endian, int size) {
@@ -100,7 +100,7 @@ void Database::identify_tables() {
         found = header_page.find("CREATE TABLE",found + 1);
         if (found!=std::string::npos) {
             tables_map.emplace_back(std::pair<int, std::string>((int) header_page[found - 1],
-                    header_page.substr(found + 12, header_page.find('(', found)  - found - 12 )));
+                    header_page.substr(found + 14, header_page.find('(', found)  - found - 16 )));
         }
     }
 
@@ -132,12 +132,10 @@ void Database::identify_tables() {
         }
     }
 
-    tables_pages = tables_map;
-//    for (auto it : tables_map){
-//        std::cout << "Binded page: " << it.first << " Table name:" << it.second << std::endl;
-//    }
-
-
+    for (auto it : tables_map){
+        std::cout << "Binded page: " << it.first << " Table name:" << it.second << std::endl;
+    }
+    tables_pages = std::move(tables_map);
 }
 
 
@@ -152,6 +150,7 @@ std::vector<std::string> Database::get_deleted_data_from_table(std::string table
             }
         }
     }
+    return deleted_data_from_table;
 }
 
 

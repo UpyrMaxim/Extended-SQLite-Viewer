@@ -16,7 +16,6 @@
 #include <mutex>
 #include <thread>
 #include <omp.h>
-//#include "DB_Structures.cpp"
 
 
 class Database {
@@ -25,7 +24,7 @@ public:
     ~Database();
     void print_db_header();
     void identify_tables();
-    std::vector<std::pair<int,std::string>> scan_freeblocks();
+    void scan_freeblocks();
     std::vector<std::string> get_deleted_data_from_table (std::string);
     static size_t to_little_endian(uint8_t *big_endian, int size);
 private:
@@ -34,6 +33,7 @@ private:
     struct FreeBlock_header;
     void parse_page(int);
     SQLite_header *db_header;
+    std::vector<char> buffer;
     std::vector<unsigned char*> pages;
     std::vector<std::pair<int,std::string>> deleted_data;
     std::vector<std::pair<int,std::string>> tables_pages;
@@ -113,18 +113,18 @@ struct Database::Btree_header{
         std::cout << "Freeblocks less then 3 bytes number : " << (int)number_of_freeblocks << std::endl;
     }
 
-    size_t get_cell_position() const
+    size_t get_cell_position()
     {
-        return (cell_position[1]<<0)|(cell_position[0]<<8);
+        return to_little_endian(cell_position,2);
     }
 
-    size_t get_first_freeblock_position() const
+    size_t get_first_freeblock_position()
     {
-        return (start_freeblock_on_page[1]<<0)|(start_freeblock_on_page[0]<<8);
+        return to_little_endian(start_freeblock_on_page,2);
     }
-    size_t get_cells_number() const
+    size_t get_cells_number()
     {
-        return (cells_number[1]<<0)|(cells_number[0]<<8);
+        return to_little_endian(cells_number,2);
     }
 };
 #pragma pack(pop)
