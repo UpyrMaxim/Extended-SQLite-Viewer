@@ -8,6 +8,7 @@
 #include <sstream>
 #include <vector>
 #include <string>
+#include <map>
 #include <utility>
 #include <memory>
 #include <iostream>
@@ -25,7 +26,7 @@ public:
     void print_db_header();
     void identify_tables();
     void scan_freeblocks();
-    std::vector<std::string> get_deleted_data_from_table (std::string);
+    std::vector<std::vector<std::vector<uint8_t >>> get_deleted_data_from_table (std::string);
     static size_t to_little_endian(uint8_t *big_endian, int size);
 private:
     struct SQLite_header;
@@ -35,8 +36,8 @@ private:
     SQLite_header *db_header;
     std::vector<char> buffer;
     std::vector<unsigned char*> pages;
-    std::vector<std::pair<int,std::string>> deleted_data;
-    std::vector<std::pair<int,std::string>> tables_pages;
+    std::map<int,std::vector<std::vector<uint8_t>>> deleted_data;
+    std::map<std::string, std::vector<int>> tables_pages;
 };
 
 

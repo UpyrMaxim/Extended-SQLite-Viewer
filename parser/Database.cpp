@@ -8,6 +8,9 @@
 
 Database::Database(std::string file_name) {
     std::ifstream file(file_name, std::ios_base::binary | std::ios::ate);
+    if (!file){
+        throw "no such file";
+    };
     std::streamsize size = file.tellg();
     buffer.resize(size);
     file.seekg(0, std::ios::beg);
@@ -47,20 +50,22 @@ void Database::parse_page(int number){
     auto page = pages[number];
     auto btree_header = reinterpret_cast<Btree_header*>(page);
     if (btree_header->flag == 13){
-        std::string parsed_data;
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
         auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
+        std::vector<std::vector<uint8_t >> freeblocks_vector;
         for (;;) {
+            std::vector<uint8_t> free_block_data;
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
-                parsed_data += page[freeblock_offset + i];
+                free_block_data.push_back(page[freeblock_offset + i]);
             };
-            std::cout << std::endl;
+            freeblocks_vector.emplace_back(free_block_data);
+//          free_block_data.clear();
             freeblock_offset = freeblock_header->get_next_offset();
             if (freeblock_offset == 0) break;
             freeblock_header = reinterpret_cast<FreeBlock_header*>(page + freeblock_header->get_next_offset());
         }
 #pragma omp critical
-        deleted_data.emplace_back(std::pair<int,std::string>(number + 1,parsed_data));
+        deleted_data.emplace(number + 1, freeblocks_vector);
     }
 }
 
@@ -71,10 +76,12 @@ void Database::scan_freeblocks() {
     for (int it = 0;it < db_header->get_pages_amount(); it++){
     parse_page(it);
     }
-
-    for (auto it : deleted_data){
-        std::cout << "Page: " << it.first << " Data from page: " << it.second << std::endl;
-    }
+//
+//    for (auto it : deleted_data) {
+//        for (auto i : it.second) {
+//            std::cout << "Page: " << it.first << " Data from page: " << i << std::endl;
+//        }
+//    }
 }
 
 size_t Database::to_little_endian (uint8_t *big_endian, int size) {
@@ -94,61 +101,59 @@ void Database::identify_tables() {
     for (size_t i{0}; i < db_header->get_database_page_size(); i++ ){
         header_page += pages[0][i];
     }
-    std::vector<std::pair<int,std::string>> tables_map;
+    std::map<std::string,std::vector<int>> tables_map;
     size_t found = 0;
     while (found != std::string::npos){
         found = header_page.find("CREATE TABLE",found + 1);
         if (found!=std::string::npos) {
-            tables_map.emplace_back(std::pair<int, std::string>((int) header_page[found - 1],
-                    header_page.substr(found + 14, header_page.find('(', found)  - found - 16 )));
+            std::vector<int> vec;
+            vec.push_back(header_page[found - 1]);
+            tables_map.emplace(header_page.substr(found + 14, header_page.find('(', found)  - found - 16 ), vec);
         }
     }
 
     bool unchecked_pages = true;
 
     while(unchecked_pages){
-        for (auto it : tables_map){
-            auto page = pages[it.first-1];
-            auto page_header = reinterpret_cast<Btree_header*>(page);
-            if (page_header->flag == 13) {
-                unchecked_pages = false;
-            }
-            if (page_header->flag == 5){
-                size_t cell_number = page_header->get_cells_number();
-                size_t cells_offset[cell_number];
-                for (size_t i{0}; i < cell_number; i++){
-                    cells_offset[i] = (page[13+i*2] << 0) | (page[14+i*2] << 8);
+        for (auto it : tables_map) {
+            for (auto i : it.second) {
+                auto page = pages[i-1];
+                auto page_header = reinterpret_cast<Btree_header *>(page);
+                if (page_header->flag == 13) {
+                    unchecked_pages = false;
                 }
+                if (page_header->flag == 5) {
+                    size_t cell_number = page_header->get_cells_number();
+                    size_t cells_offset[cell_number];
+                    for (size_t i{0}; i < cell_number; i++) {
+                        cells_offset[i] = (page[13 + i * 2] << 0) | (page[14 + i * 2] << 8);
+                    }
 
-                for (auto i : cells_offset) {
-                    int child_page_number =
-                            (page[i] << 0) | (page[i + 1] << 8) | (page[i + 2] << 16) |
-                            (page[i + 3] << 24);
-                    tables_map.emplace_back(std::pair<int, std::string>(child_page_number - 1, it.second));
-                    unchecked_pages = true;
+                    for (auto j : cells_offset) {
+                        int child_page_number =
+                                (page[j] << 0) | (page[j + 1] << 8) | (page[j + 2] << 16) |
+                                (page[j + 3] << 24);
+                        it.second.push_back(child_page_number - 1);
+                        unchecked_pages = true;
+                    }
+                    i = 0;
                 }
-                it.first = 0;
             }
         }
     }
 
-    for (auto it : tables_map){
-        std::cout << "Binded page: " << it.first << " Table name:" << it.second << std::endl;
-    }
+//    for (auto it : tables_map){
+//        std::cout << "Binded page: " << it.first << " Table name:" << it.second << std::endl;
+//    }
     tables_pages = std::move(tables_map);
 }
 
 
-std::vector<std::string> Database::get_deleted_data_from_table(std::string table_name) {
-    std::vector<std::string> deleted_data_from_table;
-    for (auto it:tables_pages){
-        if(it.second == table_name){
-            for (auto iterator : deleted_data){
-                if (iterator.first == it.first){
-                    deleted_data_from_table.push_back(iterator.second);
-                }
-            }
-        }
+std::vector<std::vector<std::vector<uint8_t >>> Database::get_deleted_data_from_table(std::string table_name) {
+    std::vector<std::vector<std::vector<uint8_t >>> deleted_data_from_table;
+    for (auto it : tables_pages[table_name]){
+        auto temp_vec = deleted_data[it];
+        deleted_data_from_table.emplace_back(temp_vec);
     }
     return deleted_data_from_table;
 }
