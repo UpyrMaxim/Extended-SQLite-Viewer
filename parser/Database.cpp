@@ -11,6 +11,7 @@ Database::Database(std::string file_name) {
     if (!file){
         throw "no such file";
     };
+
     std::streamsize size = file.tellg();
     buffer.resize(size);
     file.seekg(0, std::ios::beg);
@@ -124,7 +125,8 @@ void Database::identify_tables() {
                 }
                 if (page_header->flag == 5) {
                     size_t cell_number = page_header->get_cells_number();
-                    size_t cells_offset[cell_number];
+                    std::vector<size_t > cells_offset;
+                    cells_offset.resize(cell_number);
                     for (size_t i{0}; i < cell_number; i++) {
                         cells_offset[i] = (page[13 + i * 2] << 0) | (page[14 + i * 2] << 8);
                     }

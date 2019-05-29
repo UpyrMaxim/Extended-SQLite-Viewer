@@ -10,6 +10,7 @@
 #include "qsqlitetablelist.h"
 #include "qsqlitemodel.h"
 #include "qhexconvertor.h"
+#include "rawdatatable.h"
 
 int main(int argc, char *argv[])
 {
@@ -17,9 +18,11 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
 
+
     qmlRegisterType<QSQLiteModel>("SQliteModel", 1, 0, "SQliteModel");
     qmlRegisterType<QSQLiteTableList>("SQliteTableList", 1, 0, "SQliteTableList");
     qmlRegisterType<QHexConvertor>("QHexConvertor", 1, 0, "QHexConvertor");
+    qmlRegisterType<RAWDataTable>("RAWDataTable", 1, 0, "RAWDataTable");
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -33,8 +36,8 @@ int main(int argc, char *argv[])
     engine.rootContext()->setContextProperty("fixedFont", fixedFont);
 
 //    MySQLTableModel model{};
-
 //    engine.rootContext()->setContextProperty(QString("myTableDataModel"), &model);
+
     engine.load(url);
 
     return app.exec();

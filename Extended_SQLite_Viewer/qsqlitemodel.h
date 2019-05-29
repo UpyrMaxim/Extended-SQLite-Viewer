@@ -11,7 +11,6 @@ class QSQLiteModel : public QSqlTableModel
 {
     Q_OBJECT
 
-     //Q_PROPERTY(QString tableName READ getTableName WRITE settableName NOTIFY tableNameWasChanged) // свойства для qml???^)
 public:
     explicit QSQLiteModel(QObject *parent = nullptr);
     ~QSQLiteModel() override;
@@ -32,13 +31,7 @@ public:
 
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-
-
-//    QHash<int, QByteArray> roleNames() const override;
-
-
     Q_INVOKABLE int setDataBase(const QString &tableName);
-//    Q_INVOKABLE QSqlDatabase* getDataConection();
 
 signals:
       void tableNameWasChanged();
