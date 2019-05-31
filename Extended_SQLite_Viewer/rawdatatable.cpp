@@ -8,6 +8,7 @@ RAWDataTable::RAWDataTable(QObject *parent)
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
 {
     // FIXME: Implement me!
+    return QVariant();
 }
 
 int RAWDataTable::rowCount(const QModelIndex &parent) const
