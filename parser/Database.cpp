@@ -151,11 +151,15 @@ void Database::identify_tables() {
 }
 
 
-std::vector<std::vector<std::vector<uint8_t >>> Database::get_deleted_data_from_table(std::string table_name) {
-    std::vector<std::vector<std::vector<uint8_t >>> deleted_data_from_table;
+std::vector<std::vector<uint8_t >> Database::get_deleted_data_from_table(std::string table_name) {
+    std::vector<std::vector<uint8_t >> deleted_data_from_table;
+    if (tables_pages.find(table_name) == tables_pages.end()){
+        std::cout << "no table with that name" << std::endl;
+    };
     for (auto it : tables_pages[table_name]){
-        auto temp_vec = deleted_data[it];
-        deleted_data_from_table.emplace_back(temp_vec);
+        for (auto i : deleted_data[it]) {
+            deleted_data_from_table.emplace_back(i);
+        }
     }
     return deleted_data_from_table;
 }
