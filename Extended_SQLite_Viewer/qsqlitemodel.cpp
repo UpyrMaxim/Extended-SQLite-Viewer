@@ -64,6 +64,7 @@ void QSQLiteModel::removeRow(int row)
     beginResetModel();
     qDebug() << "delete row " << row;
     QSqlTableModel::removeRow(row);
+    this->select();
     endResetModel();
 
 }

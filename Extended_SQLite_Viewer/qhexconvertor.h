@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <fstream>
+#include <Database.h>
 
 class SimpleFileGuard {
 public:

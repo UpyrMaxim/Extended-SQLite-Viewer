@@ -201,9 +201,9 @@ Window {
             height: 20
             anchors.rightMargin: 0
             anchors.bottomMargin: 0
-            anchors.leftMargin: 0
+            anchors.leftMargin: 1
             topMargin: columnsHeader.implicitHeight
-            leftMargin: rowsHeader.implicitWidth
+            leftMargin: rowsHeader.implicitWidth + 1
             anchors.fill: parent
             columnSpacing: 1
             rowSpacing: 1
