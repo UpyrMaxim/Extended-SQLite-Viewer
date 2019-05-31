@@ -8,9 +8,25 @@
 
 Database::Database(std::string file_name) {
     std::ifstream file(file_name, std::ios_base::binary | std::ios::ate);
-    if (!file){
-        throw "no such file";
-    };
+    std::streamsize size = file.tellg();
+    buffer.resize(size);
+    file.seekg(0, std::ios::beg);
+    file.read(buffer.data(), size);
+    db_header = reinterpret_cast<SQLite_header*>(buffer.data());
+    unsigned long pages_amount = db_header->get_pages_amount();
+    auto page_size = db_header->get_database_page_size();
+    for (size_t i{0}; i < pages_amount; i++){
+        auto page = new unsigned char[page_size];
+        for (size_t j{0}; j < page_size; j++ ){
+            page[j] = buffer[j + i*page_size];
+        }
+        pages.emplace_back(page);
+    }
+}
+
+
+void Database::reset_path(std::string file_name) {
+    std::ifstream file(file_name, std::ios_base::binary | std::ios::ate);
     std::streamsize size = file.tellg();
     buffer.resize(size);
     file.seekg(0, std::ios::beg);
@@ -161,5 +177,48 @@ std::vector<std::vector<uint8_t >> Database::get_deleted_data_from_table(std::st
     }
     return deleted_data_from_table;
 }
+
+
+std::map<int,std::vector<std::vector<uint8_t>>> Database::get_all_raw_deleted_data(){
+    return deleted_data;
+}
+
+
+
+
+void Database::parse_database() {
+scan_freeblocks();
+identify_tables();
+}
+
+
+std::vector<std::string> Database::get_raw_data(std::string table_name) {
+    auto data = get_deleted_data_from_table(table_name);
+    std::vector<std::string> raw_data;
+    for (auto freeblock : data) {
+        std::stringstream stream;
+        for (auto byte : freeblock) {
+            stream << std::hex << (int)byte;
+        }
+        raw_data.emplace_back(stream.str());
+    }
+    return raw_data;
+}
+
+std::vector<std::pair<std::string,std::string>> Database::get_parsed_data(std::string table_name, std::vector<std::string> type_sequance) {
+    auto data = get_deleted_data_from_table(table_name);
+    std::vector<std::pair<std::string,std::string>>  pairs;
+    for (auto freeblock : data){
+        auto pair_vector = FreeBlock_parser::parse_free_block(freeblock, type_sequance);
+        for (auto it : pair_vector){
+            pairs.emplace_back(std::move(it));
+        }
+    }
+    return pairs;
+
+
+
+}
+
 
 
