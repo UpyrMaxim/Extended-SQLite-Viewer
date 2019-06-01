@@ -15,25 +15,36 @@
 #include <algorithm>
 #include <fstream>
 #include <mutex>
-#include <thread>
 #include <omp.h>
+#include <thread>
+#include "FreeBlock_parser.h"
+
 
 
 class Database {
 public:
+    Database () = default;
     Database (std::string);
+     Database (Database &) = default;
     ~Database();
+    void reset_path (std::string);
+    void parse_database();
+    std::vector<std::string> get_raw_data (std::string);
+    std::vector<std::pair<std::string,std::string>> get_parsed_data(std::string,std::vector<std::string>);
+    std::map<int,std::vector<std::vector<uint8_t>>> get_all_raw_deleted_data();
+
+private:
+    struct SQLite_header;
+    struct Btree_header;
+    struct FreeBlock_header;
+
+    void parse_page(int);
     void print_db_header();
     void identify_tables();
     void scan_freeblocks();
     std::vector<std::vector<uint8_t>> get_deleted_data_from_table (std::string);
     static size_t to_little_endian(uint8_t *big_endian, int size);
-private:
-    struct SQLite_header;
-    struct Btree_header;
-    struct FreeBlock_header;
-    void parse_page(int);
-    SQLite_header *db_header;
+    SQLite_header* db_header;
     std::vector<char> buffer;
     std::vector<unsigned char*> pages;
     std::map<int,std::vector<std::vector<uint8_t>>> deleted_data;

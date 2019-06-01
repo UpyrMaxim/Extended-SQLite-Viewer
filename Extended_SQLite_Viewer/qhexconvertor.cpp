@@ -1,11 +1,10 @@
 #include "qhexconvertor.h"
 #include <QDebug>
-#include <vector>
 #include <QTextStream>
 
 QHexConvertor::QHexConvertor(QObject *parent) : QObject(parent)
 {
-
+        m_rawData = new Database();
 }
 
 //QString QHexConvertor::getHexData(const QString &FilePath)
@@ -49,57 +48,61 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
 
     if(FilePath.size() && TableName.size()){
 
-        if(m_rawData != nullptr)
-            delete  m_rawData;
+        if(m_rawData == nullptr)
+             m_rawData = new Database(); // если у нас не сохдан екземпляр Database
 
-        m_rawData = new Database(FilePath.toLocal8Bit().data());
+//        m_rawData.fr
 
         QByteArray bitArray;
 
         qDebug() << "Path: " <<  FilePath.toLocal8Bit().data() << " table: " << TableName.toLocal8Bit().data();
 
-        m_rawData->print_db_header();
-        m_rawData->scan_freeblocks();
-        m_rawData->identify_tables();
+//        m_rawData->print_db_header();
+//        m_rawData->scan_freeblocks();
+//        m_rawData->identify_tables();
 
-        auto tableData = m_rawData->get_deleted_data_from_table(TableName.toLocal8Bit().data());
-
+//        auto tableData = m_rawData->get_deleted_data_from_table(TableName.toLocal8Bit().data());
+        m_rawData->reset_path(FilePath.toLocal8Bit().data());
+         m_rawData->parse_database();
+        for (auto str :  m_rawData->get_raw_data(TableName.toLocal8Bit().data())){
+            std::cout << "RAW data from freeblock:\n" << str << std::endl;
+        }
         qDebug() << "Debag raw data in hex format:" ;
-        for (auto i : tableData) {
-            for (auto  elem : i) {
-              bitArray.push_back(static_cast<char>(elem));
-            }
-        }
+//        for (auto i : tableData) {
+//            for (auto  elem : i) {
+//              bitArray.push_back(static_cast<char>(elem));
+//            }
+//        }
 
-        if(!bitArray.size())
-            return QString("HEX DATA FIELD");
+//        if(!bitArray.size())
+//            return QString("HEX DATA FIELD");
 
-        QString resultStr = bitArray.toHex(' ');
+//        QString resultStr = bitArray.toHex(' ');
 
-        int baseStep = 3;
-        int byteInLine = 16;
-        int stepModif = byteInLine * baseStep;
-        int bytePos = 0;
+//        int baseStep = 3;
+//        int byteInLine = 16;
+//        int stepModif = byteInLine * baseStep;
+//        int bytePos = 0;
 
-        QString butesLineStringView;
-        for (int i = baseStep; i <= resultStr.size() + 2; i+=baseStep, ++bytePos)
-        {
-            butesLineStringView.append(byteToCHarView(bitArray.at(bytePos)));
-            if(i >= resultStr.size() && i < stepModif ){
-                resultStr.resize(stepModif, ' ');
-                i = stepModif;
-            }
-            if( i ==  stepModif)
-            {
-                resultStr.insert(i, QString(" | ") + butesLineStringView + QString("\n"));
-                i+= butesLineStringView.size() + QString(" | \n").size();
-                stepModif = i + byteInLine * baseStep;
-                qDebug() << butesLineStringView << " stepMod val: " << stepModif << " resSize: " << resultStr.size();
-                butesLineStringView.clear();
-            }
-        }
+//        QString butesLineStringView;
+//        for (int i = baseStep; i <= resultStr.size() + 2; i+=baseStep, ++bytePos)
+//        {
+//            butesLineStringView.append(byteToCHarView(bitArray.at(bytePos)));
+//            if(i >= resultStr.size() && i < stepModif ){
+//                resultStr.resize(stepModif, ' ');
+//                i = stepModif;
+//            }
+//            if( i ==  stepModif)
+//            {
+//                resultStr.insert(i, QString(" | ") + butesLineStringView + QString("\n"));
+//                i+= butesLineStringView.size() + QString(" | \n").size();
+//                stepModif = i + byteInLine * baseStep;
+//                qDebug() << butesLineStringView << " stepMod val: " << stepModif << " resSize: " << resultStr.size();
+//                butesLineStringView.clear();
+//            }
+//        }
 
-        return resultStr.toUpper();
+//        return resultStr.toUpper();
 
     }
     return QString("HEX DATA FIELD");

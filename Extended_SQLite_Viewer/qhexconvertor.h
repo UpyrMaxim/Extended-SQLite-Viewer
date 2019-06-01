@@ -5,6 +5,7 @@
 #include <QString>
 #include <fstream>
 #include <memory>
+#include <vector>
 #include <Database.h>
 
 class SimpleFileGuard {
@@ -40,7 +41,7 @@ private:
     char byteToCHarView(char);
 
 private:
-    Database *m_rawData = nullptr;
+    Database * m_rawData;
 };
 
 #endif // QHEXCONVERTOR_H
