@@ -1,7 +1,6 @@
 #include "qhexconvertor.h"
 #include <QDebug>
-#include <memory>
-#include <iomanip>
+#include <vector>
 #include <QTextStream>
 
 QHexConvertor::QHexConvertor(QObject *parent) : QObject(parent)
@@ -9,35 +8,108 @@ QHexConvertor::QHexConvertor(QObject *parent) : QObject(parent)
 
 }
 
-QString QHexConvertor::getHexData(const QString &FilePath)
+//QString QHexConvertor::getHexData(const QString &FilePath)
+//{
+//    qDebug() << "Get Hex data start";
+//    if(FilePath.size()){
+//        QByteArray bitArray = FilePath.toLocal8Bit();
+//        const char *c_str = bitArray.data();
+//        std::ifstream file (c_str, std::ios::in| std::ios::binary| std::ios::ate);
+//        if (file.is_open())
+//        {
+//            SimpleFileGuard FileGuard(file);
+//            qDebug() << "File opened";
+//            unsigned int size = static_cast<unsigned int>(FileGuard.getFile().tellg());
+//            auto memblock = std::make_shared<char*>(new char [size+1]);
+//            FileGuard.getFile().seekg(0, std::ios::beg);
+//            FileGuard.getFile().read(*memblock.get(), size);
+
+//            bitArray.setRawData(*memblock.get(),size);
+//            QString basic_val = QString("%1").arg(0, 10, 16) + " | ";
+//            QString resultStr = basic_val + bitArray.toHex(' ');
+
+//            int offset = 0;
+//            int step = 48 + basic_val.size();
+//            for (int i = step; i <= resultStr.size(); i+=step + 1){
+//                resultStr.insert(i, QString("\n%1").arg(++offset * 16, 10, 16) + " | ");
+//            }
+
+//            return resultStr.toUpper();
+//        }
+//    }
+//    return QString("HEX DATA FIELD");
+//}
+
+QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableName)
 {
-    qDebug() << "Get Hex data start";
-    if(FilePath.size()){
-        QByteArray bitArray = FilePath.toLocal8Bit();
-        const char *c_str = bitArray.data();
-        std::ifstream file (c_str, std::ios::in| std::ios::binary| std::ios::ate);
-        if (file.is_open())
-        {
-            SimpleFileGuard FileGuard(file);
-            qDebug() << "File opened";
-            unsigned int size = static_cast<unsigned int>(FileGuard.getFile().tellg());
-            auto memblock = std::make_shared<char*>(new char [size+1]);
-            FileGuard.getFile().seekg(0, std::ios::beg);
-            FileGuard.getFile().read(*memblock.get(), size);
 
-            bitArray.setRawData(*memblock.get(),size);
-            QString basic_val = QString("%1").arg(0, 10, 16) + " | ";
-            QString resultStr = basic_val + bitArray.toHex(' ');
 
-            int offset = 0;
-            int step = 48 + basic_val.size();
-            for (int i = step; i <= resultStr.size(); i+=step + 1){
-                resultStr.insert(i, QString("\n%1").arg(++offset * 16, 10, 16) + " | ");
+    qDebug() << "Get Hex data start "  << TableName;
+
+
+    if(FilePath.size() && TableName.size()){
+
+        if(m_rawData != nullptr)
+            delete  m_rawData;
+
+        m_rawData = new Database(FilePath.toLocal8Bit().data());
+
+        QByteArray bitArray;
+
+        qDebug() << "Path: " <<  FilePath.toLocal8Bit().data() << " table: " << TableName.toLocal8Bit().data();
+
+        m_rawData->print_db_header();
+        m_rawData->scan_freeblocks();
+        m_rawData->identify_tables();
+
+        auto tableData = m_rawData->get_deleted_data_from_table(TableName.toLocal8Bit().data());
+
+        qDebug() << "Debag raw data in hex format:" ;
+        for (auto i : tableData) {
+            for (auto  elem : i) {
+              bitArray.push_back(static_cast<char>(elem));
             }
-
-            return resultStr.toUpper();
         }
+
+        if(!bitArray.size())
+            return QString("HEX DATA FIELD");
+
+        QString resultStr = bitArray.toHex(' ');
+
+        int baseStep = 3;
+        int byteInLine = 16;
+        int stepModif = byteInLine * baseStep;
+        int bytePos = 0;
+
+        QString butesLineStringView;
+        for (int i = baseStep; i <= resultStr.size() + 2; i+=baseStep, ++bytePos)
+        {
+            butesLineStringView.append(byteToCHarView(bitArray.at(bytePos)));
+            if(i >= resultStr.size() && i < stepModif ){
+                resultStr.resize(stepModif, ' ');
+                i = stepModif;
+            }
+            if( i ==  stepModif)
+            {
+                resultStr.insert(i, QString(" | ") + butesLineStringView + QString("\n"));
+                i+= butesLineStringView.size() + QString(" | \n").size();
+                stepModif = i + byteInLine * baseStep;
+                qDebug() << butesLineStringView << " stepMod val: " << stepModif << " resSize: " << resultStr.size();
+                butesLineStringView.clear();
+            }
+        }
+
+        return resultStr.toUpper();
+
     }
     return QString("HEX DATA FIELD");
+}
+
+char QHexConvertor::byteToCHarView(char charItem)
+{
+    if ( (charItem < 0x20) || (charItem > 0x7e)){
+       charItem  = '.';
+    }
+    return charItem;
 }
 

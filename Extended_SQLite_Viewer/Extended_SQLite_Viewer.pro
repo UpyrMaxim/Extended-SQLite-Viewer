@@ -42,7 +42,11 @@ HEADERS += \
     qsqlitetablelist.h \
     rawdatatable.h
 
-unix|win32: LIBS += -L$$PWD/../Lib/ -lparserlib
+
+unix:!macx|win32: LIBS += -L$$PWD/../Lib/ -lparserlib
 
 INCLUDEPATH += $$PWD/../parser
 DEPENDPATH += $$PWD/../parser
+
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/parserlib.lib
+else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/libparserlib.a

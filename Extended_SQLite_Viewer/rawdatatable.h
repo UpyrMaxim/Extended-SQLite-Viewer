@@ -3,6 +3,8 @@
 
 #include <QAbstractTableModel>
 #include <Database.h>
+#include <vector>
+
 
 class RAWDataTable : public QAbstractTableModel
 {
@@ -24,6 +26,10 @@ public:
 
 private:
     Database * rawData = nullptr;
+
+private:
+    void getTypesList(std::vector<const char *>&, const QString &tableName);
+    const char *convertQTTypetoSQLType(const QString &);
 };
 
 #endif // RAWDATATABLE_H

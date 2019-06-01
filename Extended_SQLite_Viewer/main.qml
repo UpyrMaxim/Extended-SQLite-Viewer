@@ -7,6 +7,7 @@ import QtQuick.Layouts 1.3
 import SQliteModel 1.0
 import SQliteTableList 1.0
 import QHexConvertor 1.0
+import RAWDataTable 1.0
 
 
 
@@ -81,13 +82,14 @@ Window {
         color: window.color
         width: 150
         height: 410
+       // property string activeTable: ""
 
         ListView{
             anchors.fill: parent
-
             clip: true
             model: SQliteTableList {
                 id: tableListModel
+
             }
 
             delegate: RowLayout{
@@ -97,15 +99,27 @@ Window {
                     readOnly: true
                     text: display
                     Layout.fillWidth: true
+                    //Font.bold: display == activeTable
 
-                    background: Rectangle { color: mouseArea.containsMouse ? "#CEDCDD" : "#cedcec" }
+                    background: Rectangle {
+                        color: mouseArea.containsMouse ? "#CEDCDD" : "#cedcec"
+                    }
                     MouseArea {
                         id: mouseArea
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked:{
-                           tablelContentMode.setDataBase(display)
-                           leftFieldHeaderText.text = display + " data:";
+
+                           tableDataTabButton.text = display
+
+                           if(bar.currentIndex == 0)
+                               tablelContentMode.setDataBase(display)
+
+                           if(bar.currentIndex == 1)
+                               rawTablelContentModel.setDataBase(display,tableDataTabButton.text)
+
+                           if(bar.currentIndex == 2)
+                               hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);
                         }
                     }
                 }
@@ -144,12 +158,19 @@ Window {
             height: parent.height
 
             TabButton {
+                id: tableDataTabButton
                 height: parent.height
                 text: qsTr("TableData")
+                onClicked: {
+                   tablelContentMode.setDataBase(tableDataTabButton.text)
+                }
             }
             TabButton {
                 height: parent.height
                 text: qsTr("Formated RAW data")
+                onClicked: {
+                   tablelContentMode.setDataBase(tableDataTabButton.text)
+                }
             }
             TabButton {
                 height: parent.height
@@ -158,8 +179,7 @@ Window {
                     id: hexConvertor
                 }
                 onClicked: {
-                  console.log(hexConvertor.getHexData(" output " + urlToPath(fileDialog.fileUrls.toString())));
-                  hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()));
+                  hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);
                 }
             }
 
@@ -276,9 +296,53 @@ Window {
         width: window.width - tableListField.width - 40;
         height:window.height - 35;
         color: "#feffe0"
-        Text {
-            text: "RAW DATA FIELD"
-            anchors.centerIn: parent
+        TableView {
+            id: rawDataTableView
+            height: 20
+            anchors.rightMargin: 0
+            anchors.bottomMargin: 0
+            anchors.leftMargin: 1
+//            topMargin: rawDataColumnsHeader.implicitHeight
+            anchors.fill: parent
+            columnSpacing: 1
+            rowSpacing: 1
+            clip: true
+            model: RAWDataTable {
+                id: rawTablelContentModel
+            }
+
+//            delegate: Rectangle {
+//                id: rawTableRowTextField
+//                color: "#CEDCDD"
+//                implicitWidth: 150
+//                implicitHeight: 20
+//                width: 150
+//                height: 20
+//                Text {
+//                    id: rawTableColumn
+//                    text: display
+//                }
+//            }
+
+//            Row {
+//                id: rawDataColumnsHeader
+//                y: mainTableView.contentY
+//                z: 3
+
+//                Repeater {
+//                    model: rawDataTableView.columns
+//                    Label {
+//                        width: 151
+//                        height: 26
+//                        text: rawTablelContentModel.headerData(modelData, Qt.Horizontal)
+//                        color: '#333333'
+//                        padding: 10
+//                        verticalAlignment: Text.AlignVCenter
+
+//                        background: Rectangle { color: "#aaaaaa" }
+//                    }
+//                }
+//            }
         }
    }
 

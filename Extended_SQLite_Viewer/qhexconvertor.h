@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QString>
 #include <fstream>
+#include <memory>
 #include <Database.h>
 
 class SimpleFileGuard {
@@ -30,11 +31,16 @@ class QHexConvertor : public QObject
 public:
     explicit QHexConvertor(QObject *parent = nullptr);
 
-    Q_INVOKABLE QString getHexData(const QString &FilePath);
+    Q_INVOKABLE QString getHexData(const QString &,const QString &);
 
 signals:
 
 public slots:
+private:
+    char byteToCHarView(char);
+
+private:
+    Database *m_rawData = nullptr;
 };
 
 #endif // QHEXCONVERTOR_H

@@ -1,4 +1,6 @@
 #include "rawdatatable.h"
+#include "dbasesingleton.h"
+#include <QtSql>
 
 RAWDataTable::RAWDataTable(QObject *parent)
     : QAbstractTableModel(parent)
@@ -41,8 +43,26 @@ void RAWDataTable::setDataBase(const QString &dbPath, const QString &tableName)
     if(rawData != nullptr){
         delete rawData;
     }
+    std::vector<const char*> types;
+    qDebug() << "setRawDataBase";
+    getTypesList(types,tableName);
+}
 
-    QByteArray byteArray = dbPath.toLocal8Bit();
-    const char *c_path = byteArray.data();
-    rawData = new Database(c_path);
+void RAWDataTable::getTypesList(std::vector<const char *> & outPut, const QString &tableName)
+{
+    auto var = DBaseSingleton::getInstance().record(tableName);
+    for(int i = 0; i < var.count(); ++i)
+    {
+        qDebug() << convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName());
+    }
+}
+
+const char *RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
+{
+    if(TypeName == "int")
+        return  "Int";
+    if(TypeName == "QString")
+        return "Text";
+
+    return "undefined";
 }
