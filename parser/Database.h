@@ -31,7 +31,7 @@ public:
     void print_db_header();
     void parse_database();
     std::vector<std::vector<uint8_t >> get_raw_data (std::string);
-    std::vector<std::vector<std::string>> get_parsed_data(std::string,std::vector<std::string>);
+    std::vector<std::vector<std::string >> get_parsed_data(const std::string& ,std::vector<std::string>);
     std::map<int,std::vector<std::vector<uint8_t>>> get_all_raw_deleted_data();
     std::map<std::string,std::vector<int>> get_tables_pages();
 
