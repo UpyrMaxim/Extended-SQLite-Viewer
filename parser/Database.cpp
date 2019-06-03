@@ -216,7 +216,7 @@ std::vector<std::vector<std::string>> Database::get_parsed_data(std::string tabl
             values.emplace_back(std::move(pair.second));
         }
     }
-    return pairs;
+    return values;
 }
 
 std::map<std::string,std::vector<int>> Database::get_tables_pages() {
