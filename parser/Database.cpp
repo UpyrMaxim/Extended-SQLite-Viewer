@@ -207,16 +207,18 @@ std::vector<std::vector<uint8_t > > Database::get_raw_data(std::string table_nam
     return raw_data;
 }
 
-std::vector<std::vector<std::string>> Database::get_parsed_data(std::string table_name, std::vector<std::string> type_sequance) {
+std::vector<std::vector<std::string>> Database::get_parsed_data(const std::string &table_name, std::vector<std::string> type_sequance) {
     auto data = get_deleted_data_from_table(table_name);
-    std::vector<std::vector<std::string>>  values;
-    for (auto freeblock : data){
+    std::vector<std::vector<std::string >>  values;
+    for (auto &freeblock : data){
         auto pair_vector = FreeBlock_parser::parse_free_block(freeblock, type_sequance);
+        std::vector<std::string> string_vector;
         for (auto pair : pair_vector){
-            values.emplace_back(std::move(pair.second));
+            string_vector.push_back(pair.second);
         }
+        values.push_back(string_vector);
     }
-    return pairs;
+    return values;
 }
 
 std::map<std::string,std::vector<int>> Database::get_tables_pages() {
