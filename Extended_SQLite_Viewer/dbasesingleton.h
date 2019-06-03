@@ -10,7 +10,7 @@ class DBaseSingleton;  // опережающее объявление
 class SingletonDestroyer
 {
   private:
-    DBaseSingleton* p_instance;
+    DBaseSingleton* p_instance = nullptr;
   public:
     ~SingletonDestroyer();
     void initialize( DBaseSingleton* p );

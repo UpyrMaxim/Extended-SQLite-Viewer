@@ -112,11 +112,12 @@ Window {
 
                            tableDataTabButton.text = display
 
-                           if(bar.currentIndex == 0)
+                           if(bar.currentIndex == 0){
                                tablelContentMode.setDataBase(display)
+                           }
 
                            if(bar.currentIndex == 1)
-                               rawTablelContentModel.setDataBase(display,tableDataTabButton.text)
+                               rawTablelContentModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text)
 
                            if(bar.currentIndex == 2)
                                hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);

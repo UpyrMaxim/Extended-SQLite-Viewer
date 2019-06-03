@@ -5,6 +5,7 @@
 RAWDataTable::RAWDataTable(QObject *parent)
     : QAbstractTableModel(parent)
 {
+            m_rawData = new Database();
 }
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
@@ -38,31 +39,38 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void RAWDataTable::setDataBase(const QString &dbPath, const QString &tableName)
+void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 {
-    if(rawData != nullptr){
-        delete rawData;
+    if(m_rawData == nullptr){
+        m_rawData = new Database();;
     }
-    std::vector<const char*> types;
-    qDebug() << "setRawDataBase";
-    getTypesList(types,tableName);
+    qDebug() << "init path: "<< dbPath;
+
+    qDebug() << "deleted content start: "<< TableName;
+    m_rawData->reset_path(dbPath.toLocal8Bit().data());
+    std::vector<std::string> types;
+
+    getTypesList(types,TableName);
+    for (auto pair : m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types)){
+        std::cout << "We got type " << pair.first << " and data in it is: " << pair.second << std::endl;
+    }
 }
 
-void RAWDataTable::getTypesList(std::vector<const char *> & outPut, const QString &tableName)
+void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString &tableName)
 {
     auto var = DBaseSingleton::getInstance().record(tableName);
     for(int i = 0; i < var.count(); ++i)
     {
-        qDebug() << convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName());
+        outPut.push_back(convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName()));
     }
 }
 
-const char *RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
+std::string  RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
 {
     if(TypeName == "int")
-        return  "Int";
+        return  "INT";
     if(TypeName == "QString")
-        return "Text";
+        return "TEXT";
 
     return "undefined";
 }

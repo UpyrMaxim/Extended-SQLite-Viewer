@@ -25,11 +25,11 @@ public:
     Q_INVOKABLE void setDataBase(const QString &dbPath, const QString &tableName);
 
 private:
-    Database * rawData = nullptr;
+    Database * m_rawData = nullptr;
 
 private:
-    void getTypesList(std::vector<const char *>&, const QString &tableName);
-    const char *convertQTTypetoSQLType(const QString &);
+    void getTypesList(std::vector<std::string>&, const QString &tableName);
+    std::string convertQTTypetoSQLType(const QString &);
 };
 
 #endif // RAWDATATABLE_H

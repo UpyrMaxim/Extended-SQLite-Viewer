@@ -9,7 +9,8 @@ SingletonDestroyer::~SingletonDestroyer() {
     delete p_instance;
 }
 void SingletonDestroyer::initialize( DBaseSingleton* p ) {
-    p_instance = p;
+    if(p_instance == nullptr)
+        p_instance = p;
 }
 
 
