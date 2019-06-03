@@ -122,7 +122,14 @@ void Database::identify_tables() {
         if (found!=std::string::npos) {
             std::vector<int> vec;
             vec.push_back(header_page[found - 1]);
-            tables_map.emplace(header_page.substr(found + 14, header_page.find('(', found)  - found - 16 ), vec);
+            auto table_name = header_page.substr(found + 13, header_page.find('(', found)  - found - 13 );
+            if (table_name[0] == ' ')
+                table_name = table_name.substr(1,table_name.size() - 1);
+            if (table_name[0] == '"') table_name = table_name.substr(1,table_name.size() - 1);
+                        if (table_name[table_name.size() - 1] == '"') table_name = table_name.substr(0,table_name.size() - 1);
+            if (table_name[table_name.size() - 1] == ' ')
+                table_name = table_name.substr(0,table_name.size() - 1);
+            tables_map.emplace(table_name, vec);
         }
     }
 
@@ -174,6 +181,7 @@ void Database::identify_tables() {
 std::vector<std::vector<uint8_t >> Database::get_deleted_data_from_table(std::string table_name) {
     std::vector<std::vector<uint8_t >> deleted_data_from_table;
     if (tables_pages.find(table_name) == tables_pages.end()){
+        std::cout << "table: "<< table_name << std::endl;
         std::cout << "no table with that name" << std::endl;
     };
     for (auto it : tables_pages[table_name]){
