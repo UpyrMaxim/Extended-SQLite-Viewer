@@ -28,10 +28,12 @@ public:
      Database (Database &) = default;
     ~Database();
     void reset_path (std::string);
+    void print_db_header();
     void parse_database();
-    std::vector<std::string> get_raw_data (std::string);
-    std::vector<std::pair<std::string,std::string>> get_parsed_data(std::string,std::vector<std::string>);
+    std::vector<std::vector<uint8_t >> get_raw_data (std::string);
+    std::vector<std::vector<std::string>> get_parsed_data(std::string,std::vector<std::string>);
     std::map<int,std::vector<std::vector<uint8_t>>> get_all_raw_deleted_data();
+    std::map<std::string,std::vector<int>> get_tables_pages();
 
 private:
     struct SQLite_header;
@@ -39,7 +41,7 @@ private:
     struct FreeBlock_header;
 
     void parse_page(int);
-    void print_db_header();
+
     void identify_tables();
     void scan_freeblocks();
     std::vector<std::vector<uint8_t>> get_deleted_data_from_table (std::string);
