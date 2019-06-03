@@ -69,7 +69,7 @@ void Database::parse_page(int number){
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
         auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
         std::vector<std::vector<uint8_t >> freeblocks_vector;
-        for (;;) {
+        while (freeblock_offset < freeblock_header->get_next_offset()) {
             std::vector<uint8_t> free_block_data;
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
                 free_block_data.push_back(page[freeblock_offset + i]);
@@ -80,7 +80,6 @@ void Database::parse_page(int number){
             if (freeblock_offset == 0) break;
             freeblock_header = reinterpret_cast<FreeBlock_header*>(page + freeblock_header->get_next_offset());
         }
-#pragma omp critical
         deleted_data.emplace(number + 1, freeblocks_vector);
     }
 }
@@ -88,14 +87,13 @@ void Database::parse_page(int number){
 
 void Database::scan_freeblocks() {
     omp_set_num_threads(std::thread::hardware_concurrency());
-    #pragma omp parallel for
     for (int it = 0;it < db_header->get_pages_amount(); it++){
-    parse_page(it);
+        parse_page(it);
     }
-//
-//    for (auto it : deleted_data) {
-//        for (auto i : it.second) {
-//            std::cout << "Page: " << it.first << " Data from page: " << i << std::endl;
+
+//    for (auto &it : deleted_data) {
+//        for (auto &i : it.second) {
+//            std::cout << "Page: " << it.first << " Data from page: " << it.first << std::endl;
 //        }
 //    }
 }
@@ -130,17 +128,21 @@ void Database::identify_tables() {
 
     bool unchecked_pages = true;
 
+
     while(unchecked_pages){
-        for (auto it : tables_map) {
-            for (auto i : it.second) {
+        for (auto iterator : tables_map) {
+            for (auto i : iterator.second) {
                 auto page = pages[i-1];
                 auto page_header = reinterpret_cast<Btree_header *>(page);
                 if (page_header->flag == 13) {
-                    unchecked_pages = false;
+                    {
+                        unchecked_pages = false;
+                    };
                 }
                 if (page_header->flag == 5) {
                     size_t cell_number = page_header->get_cells_number();
-                    size_t cells_offset[cell_number];
+                    std::vector<size_t> cells_offset;
+                    cells_offset.resize(cell_number);
                     for (size_t i{0}; i < cell_number; i++) {
                         cells_offset[i] = (page[13 + i * 2] << 0) | (page[14 + i * 2] << 8);
                     }
@@ -149,12 +151,16 @@ void Database::identify_tables() {
                         int child_page_number =
                                 (page[j] << 0) | (page[j + 1] << 8) | (page[j + 2] << 16) |
                                 (page[j + 3] << 24);
-                        it.second.push_back(child_page_number - 1);
-                        unchecked_pages = true;
+                        iterator.second.push_back(child_page_number - 1);
+
+                        {
+                            unchecked_pages = true;
+                        };
                     }
                     i = 0;
                 }
             }
+
         }
     }
 
@@ -192,32 +198,29 @@ identify_tables();
 }
 
 
-std::vector<std::string> Database::get_raw_data(std::string table_name) {
+std::vector<std::vector<uint8_t > > Database::get_raw_data(std::string table_name) {
     auto data = get_deleted_data_from_table(table_name);
-    std::vector<std::string> raw_data;
+    std::vector<std::vector<uint8_t > > raw_data;
     for (auto freeblock : data) {
-        std::stringstream stream;
-        for (auto byte : freeblock) {
-            stream << std::hex << (int)byte;
+            raw_data.emplace_back(freeblock);
         }
-        raw_data.emplace_back(stream.str());
-    }
     return raw_data;
 }
 
-std::vector<std::pair<std::string,std::string>> Database::get_parsed_data(std::string table_name, std::vector<std::string> type_sequance) {
+std::vector<std::vector<std::string>> Database::get_parsed_data(std::string table_name, std::vector<std::string> type_sequance) {
     auto data = get_deleted_data_from_table(table_name);
-    std::vector<std::pair<std::string,std::string>>  pairs;
+    std::vector<std::vector<std::string>>  values;
     for (auto freeblock : data){
         auto pair_vector = FreeBlock_parser::parse_free_block(freeblock, type_sequance);
-        for (auto it : pair_vector){
-            pairs.emplace_back(std::move(it));
+        for (auto pair : pair_vector){
+            values.emplace_back(std::move(pair.second));
         }
     }
     return pairs;
+}
 
-
-
+std::map<std::string,std::vector<int>> Database::get_tables_pages() {
+    return tables_pages;
 }
 
 
