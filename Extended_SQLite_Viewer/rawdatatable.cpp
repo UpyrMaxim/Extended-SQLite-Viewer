@@ -1,6 +1,7 @@
 #include "rawdatatable.h"
 #include "dbasesingleton.h"
 #include <QtSql>
+#include <QDebug>
 
 RAWDataTable::RAWDataTable(QObject *parent)
     : QAbstractTableModel(parent)
@@ -41,23 +42,27 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
 
 void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 {
-    if(m_rawData == nullptr){
-        m_rawData = new Database();;
+    if(m_rawData != nullptr){
+        delete m_rawData;
     }
+    m_rawData = new Database();;
+
     qDebug() << "init path: "<< dbPath;
 
     qDebug() << "deleted content start: "<< TableName;
     m_rawData->reset_path(dbPath.toLocal8Bit().data());
+    m_rawData->parse_database();
     std::vector<std::string> types;
-
     getTypesList(types,TableName);
-    for (auto pair : m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types)){
-        for (auto item : pair){
-            std::cout << item << " ";
+    auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
+    qDebug() << "elemCount: "<< deletedContent.size();
+    for (const auto &pair : deletedContent){
+        for (const auto &item : pair){
+            qDebug() << QString(item.c_str()) << " - ";
         }
     }
 
-
+    qDebug() << "deleted content end: "<< TableName;
 
 }
 
@@ -67,6 +72,7 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString
     for(int i = 0; i < var.count(); ++i)
     {
         outPut.push_back(convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName()));
+        qDebug() << QString(outPut.rbegin()->c_str());
     }
 }
 

@@ -48,8 +48,9 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
 
     if(FilePath.size() && TableName.size()){
 
-        if(m_rawData == nullptr)
-             m_rawData = new Database(); // если у нас не сохдан екземпляр Database
+        if(m_rawData != nullptr)
+             delete m_rawData; // если у нас не сохдан екземпляр Database
+        m_rawData = new Database(); // если у нас не сохдан екземпляр Database
 
 //        m_rawData.fr
 
@@ -60,7 +61,7 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
          m_rawData->reset_path(FilePath.toLocal8Bit().data());
          m_rawData->parse_database();
         auto tableData = m_rawData->get_raw_data(TableName.toLocal8Bit().data());
-
+        qDebug() << "Path " << FilePath.toLocal8Bit().data() << " TableName.toLocal8Bit().data()";
         if(!tableData.size()){
              return QString("Empty raw data");
         }
