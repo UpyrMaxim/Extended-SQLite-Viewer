@@ -25,6 +25,7 @@ class Database {
 public:
     Database () = default;
     Database (std::string);
+     Database (Database &) = default;
     ~Database();
     void reset_path (std::string);
     void print_db_header();

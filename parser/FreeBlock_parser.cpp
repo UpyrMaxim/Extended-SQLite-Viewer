@@ -5,7 +5,7 @@
 #include "FreeBlock_parser.h"
 
 
-int FreeBlock_parser::to_little_endian (uint8_t *big_endian, int size) {
+int FreeBlock_parser::to_little_endian (std::vector<uint8_t> &big_endian, int size) {
     int lil_endian = 0;
     auto big_end = big_endian;
     int offset = 0;
@@ -74,7 +74,8 @@ std::vector<std::pair<std::string,std::string>> FreeBlock_parser::parse_free_blo
 
 
         if(value < 7){
-            uint8_t big_endian[data_length];
+            std::vector<uint8_t> big_endian;
+            big_endian.resize(static_cast<size_t>(data_length));
             for (int j{0}; j < data_length; j ++){
                 big_endian[j] = (freeblock[unreaded_data_offset + j]);
             }

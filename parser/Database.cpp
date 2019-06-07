@@ -123,10 +123,17 @@ void Database::identify_tables() {
             std::vector<int> vec;
             vec.push_back(header_page[found - 1]);
             auto table_name = header_page.substr(found + 13, header_page.find('(', found)  - found - 13 );
-            if (table_name[0] == ' ') table_name = table_name.substr(1,table_name.size() - 1);
-            if (table_name[table_name.size() - 1] == ' ') table_name = table_name.substr(0,table_name.size() - 1);
-            if (table_name[0] == '"') table_name = table_name.substr(1,table_name.size() - 1);
-            if (table_name[table_name.size() - 1] == '"') table_name = table_name.substr(0,table_name.size() - 1);
+
+            if (table_name[0] == ' ')
+                table_name.erase(0,1);
+            if (table_name[0] == '"')
+                table_name.erase(0,1);
+            if (table_name[table_name.size() - 1] == ' ')
+                table_name.erase(table_name.size() - 1,1);
+            if (table_name[table_name.size() - 1] == '"')
+                table_name.erase(table_name.size() - 1,1);
+
+
             tables_map.emplace(table_name, vec);
         }
     }
@@ -146,7 +153,7 @@ void Database::identify_tables() {
                 }
                 if (page_header->flag == 5) {
                     size_t cell_number = page_header->get_cells_number();
-                    std::vector<size_t> cells_offset;
+                    std::vector<size_t > cells_offset;
                     cells_offset.resize(cell_number);
                     for (size_t i{0}; i < cell_number; i++) {
                         cells_offset[i] = (page[13 + i * 2] << 0) | (page[14 + i * 2] << 8);
@@ -179,6 +186,7 @@ void Database::identify_tables() {
 std::vector<std::vector<uint8_t >> Database::get_deleted_data_from_table(std::string table_name) {
     std::vector<std::vector<uint8_t >> deleted_data_from_table;
     if (tables_pages.find(table_name) == tables_pages.end()){
+        std::cout << "table: "<< table_name << std::endl;
         std::cout << "no table with that name" << std::endl;
     };
     for (auto it : tables_pages[table_name]){
