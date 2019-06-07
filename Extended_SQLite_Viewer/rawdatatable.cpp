@@ -51,9 +51,14 @@ void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
     std::vector<std::string> types;
 
     getTypesList(types,TableName);
-//    for (auto pair : m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types)){
-//        std::cout << "We got type " << pair << " and data in it is: " << pair.second << std::endl;
-//    }
+    for (auto pair : m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types)){
+        for (auto item : pair){
+            std::cout << item << " ";
+        }
+    }
+
+
+
 }
 
 void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString &tableName)
