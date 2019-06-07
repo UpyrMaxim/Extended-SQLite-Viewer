@@ -6,15 +6,30 @@
 
 int main() {
     auto db = new Database();
-    db->reset_path("places.sqlite");
+    db->reset_path("new_test_db.sqlite");
     db->parse_database();
     db->print_db_header();
-//    for (auto it : db->get_tables_pages()){
-//        std::cout << "You have table " << it.first << std::endl;
-//    }
-//   for (auto str : db->get_raw_data("qlite_sta")){
-//        std::cout << "RAW data from freeblock:\n" << str << std::endl;
-//    }
+    for (auto it : db->get_tables_pages()){
+        std::cout << "You have table " << it.first << std::endl;
+    }
+    for (auto page : db->get_raw_data("test")) {
+        for (auto byte : page) {
+            std::cout << "RAW data from freeblock:\n" << byte << std::endl;
+        }
+    }
+
+
+    auto all_data = db->get_all_raw_deleted_data();
+    for (auto it : all_data){
+        for (auto freeblock : it.second){
+            for (auto byte : freeblock){
+                std::cout << byte;
+            }
+        }
+    }
+
+
+
 //
 //
 //    std::vector<std::string> types = {"INT","TEXT", "TEXT"};

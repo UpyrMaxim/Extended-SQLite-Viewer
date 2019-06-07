@@ -69,7 +69,7 @@ void Database::parse_page(int number){
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
         auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
         std::vector<std::vector<uint8_t >> freeblocks_vector;
-        while (freeblock_offset < freeblock_header->get_next_offset()) {
+        for (;;) {
             std::vector<uint8_t> free_block_data;
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
                 free_block_data.push_back(page[freeblock_offset + i]);
@@ -122,7 +122,12 @@ void Database::identify_tables() {
         if (found!=std::string::npos) {
             std::vector<int> vec;
             vec.push_back(header_page[found - 1]);
-            tables_map.emplace(header_page.substr(found + 14, header_page.find('(', found)  - found - 16 ), vec);
+            auto table_name = header_page.substr(found + 13, header_page.find('(', found)  - found - 13 );
+            if (table_name[0] == ' ') table_name = table_name.substr(1,table_name.size() - 1);
+            if (table_name[table_name.size() - 1] == ' ') table_name = table_name.substr(0,table_name.size() - 1);
+            if (table_name[0] == '"') table_name = table_name.substr(1,table_name.size() - 1);
+            if (table_name[table_name.size() - 1] == '"') table_name = table_name.substr(0,table_name.size() - 1);
+            tables_map.emplace(table_name, vec);
         }
     }
 
