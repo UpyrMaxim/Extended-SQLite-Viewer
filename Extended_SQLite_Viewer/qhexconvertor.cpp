@@ -57,9 +57,6 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
 
         qDebug() << "Path: " <<  FilePath.toLocal8Bit().data() << " table: " << TableName.toLocal8Bit().data();
 
-//        m_rawData->print_db_header();
-//        m_rawData->scan_freeblocks();
-//        m_rawData->identify_tables();
          m_rawData->reset_path(FilePath.toLocal8Bit().data());
          m_rawData->parse_database();
         auto tableData = m_rawData->get_raw_data(TableName.toLocal8Bit().data());
@@ -67,9 +64,7 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
         if(!tableData.size()){
              return QString("Empty raw data");
         }
-//        for (auto str :  m_rawData->get_raw_data(TableName.toLocal8Bit().data())){
-//            std::cout << "RAW data from freeblock:\n" << str << std::endl;
-//        }
+
         qDebug() << "Debag raw data in hex format:" ;
         for (auto i : tableData) {
             for (auto  elem : i) {
