@@ -69,7 +69,7 @@ void Database::parse_page(int number){
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
         auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
         std::vector<std::vector<uint8_t >> freeblocks_vector;
-        while (freeblock_offset < freeblock_header->get_next_offset()) {
+        for (;;) {
             std::vector<uint8_t> free_block_data;
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
                 free_block_data.push_back(page[freeblock_offset + i]);
