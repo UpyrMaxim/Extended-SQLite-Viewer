@@ -123,12 +123,17 @@ void Database::identify_tables() {
             std::vector<int> vec;
             vec.push_back(header_page[found - 1]);
             auto table_name = header_page.substr(found + 13, header_page.find('(', found)  - found - 13 );
+
             if (table_name[0] == ' ')
-                table_name = table_name.substr(1,table_name.size() - 1);
-            if (table_name[0] == '"') table_name = table_name.substr(1,table_name.size() - 1);
-                        if (table_name[table_name.size() - 1] == '"') table_name = table_name.substr(0,table_name.size() - 1);
+                table_name.erase(0,1);
+            if (table_name[0] == '"')
+                table_name.erase(0,1);
             if (table_name[table_name.size() - 1] == ' ')
-                table_name = table_name.substr(0,table_name.size() - 1);
+                table_name.erase(table_name.size() - 1,1);
+            if (table_name[table_name.size() - 1] == '"')
+                table_name.erase(table_name.size() - 1,1);
+
+
             tables_map.emplace(table_name, vec);
         }
     }
