@@ -40,6 +40,9 @@ signals:
 public slots:
 private:
     char byteToCHarView(char);
+    void loadBynaryData(QByteArray&,const std::string&,const std::string&);
+    void convertToHexView(const QByteArray&, QString&);
+    void resetRawDataBaseObject();
 
 private:
     Database * m_rawData = nullptr;

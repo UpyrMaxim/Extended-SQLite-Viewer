@@ -28,8 +28,9 @@ private:
     Database * m_rawData = nullptr;
 
 private:
-    void getTypesList(std::vector<std::string>&, const QString &tableName);
+    void getTypesList(std::vector<std::string>&, const QString &);
     std::string convertQTTypetoSQLType(const QString &);
+    void resetRawDataBaseObject(const std::string&);
 };
 
 #endif // RAWDATATABLE_H

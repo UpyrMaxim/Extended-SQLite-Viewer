@@ -6,7 +6,6 @@
 RAWDataTable::RAWDataTable(QObject *parent)
     : QAbstractTableModel(parent)
 {
-            m_rawData = new Database();
 }
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
@@ -42,20 +41,13 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
 
 void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 {
-    if(m_rawData != nullptr){
-        delete m_rawData;
-    }
-    m_rawData = new Database();;
-
-    qDebug() << "init path: "<< dbPath;
-
-    qDebug() << "deleted content start: "<< TableName;
-    m_rawData->reset_path(dbPath.toLocal8Bit().data());
-    m_rawData->parse_database();
+    resetRawDataBaseObject(dbPath.toLocal8Bit().data());
     std::vector<std::string> types;
+
     getTypesList(types,TableName);
     auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
     qDebug() << "elemCount: "<< deletedContent.size();
+
     for (const auto &pair : deletedContent){
         for (const auto &item : pair){
             qDebug() << QString(item.c_str()) << " - ";
@@ -76,12 +68,27 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString
     }
 }
 
-std::string  RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
+std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
 {
     if(TypeName == "int")
         return  "INT";
     if(TypeName == "QString")
         return "TEXT";
+    if(TypeName == "float")
+        return "REAL";
+    if(TypeName == "double")
+        return "REAL";
+    // просто набор байтиков :)
+    return "BLOB"; // хз как называется
+}
 
-    return "undefined";
+void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
+{
+    if(m_rawData != nullptr)
+    {
+         delete m_rawData;
+    }
+    m_rawData = new Database();
+    m_rawData->reset_path(dbPath);
+    m_rawData->parse_database();
 }
