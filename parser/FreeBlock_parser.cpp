@@ -29,7 +29,7 @@ int FreeBlock_parser::find_types_values_match(std::vector<uint8_t> freeblock, st
     }
     //std::cout << "block size: " << freeblock_size << std::endl;
     bool flag = true;
-    int variable_length = 4;
+    int variable_length = 0;
     for (int x{3}; x < (freeblock_size - 4); x++){
         for (auto it : types_sequence){
             flag *= compare_values_with_type((int)freeblock[x],it);
@@ -48,29 +48,32 @@ int FreeBlock_parser::find_types_values_match(std::vector<uint8_t> freeblock, st
 
 std::vector<std::pair<std::string,std::string>> FreeBlock_parser::parse_free_block(std::vector<uint8_t> freeblock, std::vector<std::string> types_sequense){
     std::vector<std::pair<std::string,std::string>> data_from_freeblock;
-    auto x = find_types_values_match(freeblock,types_sequense);
-    if (x == 0){
-        return data_from_freeblock;
-    }
-    unsigned long unreaded_data_offset = x + types_sequense.size();
-    for (int i{0}; i < types_sequense.size(); i++, x++) {
-        int value = (int) freeblock[x];
-        int data_length = 0;
-        if (value < 5){
-            data_length = value;
+    unsigned long unreaded_data_offset = 0;
+    while(unreaded_data_offset < freeblock.size()) {
+        auto sliced_cell = std::vector<uint8_t>(freeblock.begin() + unreaded_data_offset, freeblock.end());
+        auto cell_start = find_types_values_match(sliced_cell, types_sequense);
+        if (cell_start == 0) {
+            return data_from_freeblock;
         }
-        if (value == 5){
-            data_length = 6;
-        }
-        if (value == 6) {
-            data_length = 8;
-        }
-        if (value == 7){
-            data_length = 8;
-        }
-        if (value > 12){
-            data_length = (value - 12) / 2;
-        }
+        unreaded_data_offset = cell_start + types_sequense.size();
+        for (int i{0}; i < types_sequense.size(); i++, cell_start++) {
+            int value = (int) freeblock[cell_start];
+            int data_length = 0;
+            if (value < 5) {
+                data_length = value;
+            }
+            if (value == 5) {
+                data_length = 6;
+            }
+            if (value == 6) {
+                data_length = 8;
+            }
+            if (value == 7) {
+                data_length = 8;
+            }
+            if (value > 12) {
+                data_length = (value - 12) / 2;
+            }
 
 
 //        std::cout << std::endl << "We think the data of type " << types_sequense[i] << " in this bytes: " << std::endl;
@@ -79,49 +82,51 @@ std::vector<std::pair<std::string,std::string>> FreeBlock_parser::parse_free_blo
 //        }
 
 
-        if(value < 7){
-            std::vector<uint8_t> big_endian;
-            big_endian.resize(static_cast<size_t>(data_length));
-            if (unreaded_data_offset + data_length > freeblock.size()){
-                data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],"can't parse data"));
-                break;
+            if (value < 7) {
+                std::vector<uint8_t> big_endian;
+                big_endian.resize(static_cast<size_t>(data_length));
+                if (unreaded_data_offset + data_length > freeblock.size()) {
+                    data_from_freeblock.emplace_back(
+                            std::pair<std::string, std::string>(types_sequense[i], "can't parse data"));
+                    break;
+                }
+                for (int j{0}; j < data_length; j++) {
+                    big_endian[j] = (freeblock[unreaded_data_offset + j]);
+                }
+                int little_endian = to_little_endian(big_endian, data_length);
+                data_from_freeblock.emplace_back(
+                        std::pair<std::string, std::string>(types_sequense[i], std::to_string(little_endian)));
             }
-            for (int j{0}; j < data_length; j ++){
-                big_endian[j] = (freeblock[unreaded_data_offset + j]);
-            }
-            int little_endian = to_little_endian(big_endian, data_length);
-            data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],std::to_string(little_endian)));
-        }
 
-        if (value == 7){
-            std::vector<uint8_t> big_endian;
-            big_endian.resize(static_cast<size_t>(data_length));
-            if (unreaded_data_offset + data_length > freeblock.size()){
-                data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],"can't parse data"));
-                break;
+            if (value == 7) {
+                std::vector<uint8_t> big_endian;
+                big_endian.resize(static_cast<size_t>(data_length));
+                if (unreaded_data_offset + data_length > freeblock.size()) {
+                    data_from_freeblock.emplace_back(
+                            std::pair<std::string, std::string>(types_sequense[i], "can't parse data"));
+                    break;
+                }
+                for (int j{0}; j < data_length; j++) {
+                    big_endian[j] = (freeblock[unreaded_data_offset + j]);
+                }
             }
-            for (int j{0}; j < data_length; j ++){
-                big_endian[j] = (freeblock[unreaded_data_offset + j]);
-            }
-        }
 
-        if (value > 12){
+            if (value > 12) {
 //            std::cout << "TEXT/BLOB is like this: " << std::endl;
-            std::string data;
-            if (unreaded_data_offset + data_length > freeblock.size()){
-                data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],"can't parse data"));
-                break;
+                std::string data;
+                if (unreaded_data_offset + data_length > freeblock.size()) {
+                    data_from_freeblock.emplace_back(
+                            std::pair<std::string, std::string>(types_sequense[i], "can't parse data"));
+                    break;
+                }
+                for (int j{0}; j < data_length; j++) {
+                    data += freeblock[unreaded_data_offset + j];
+                }
+                data_from_freeblock.emplace_back(std::pair<std::string, std::string>(types_sequense[i], data));
             }
-            for (int j{0}; j < data_length; j ++){
-                data += freeblock[unreaded_data_offset + j];
-            }
-            data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],data));
+            unreaded_data_offset += data_length;
         }
-
-
-
-        unreaded_data_offset += data_length;
-
     }
+
     return data_from_freeblock;
 }

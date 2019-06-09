@@ -84,7 +84,7 @@ void Database::parse_page(int number){
 //          free_block_data.clear();
             freeblock_offset = freeblock_header->get_next_offset();
             if (freeblock_offset == 0) break;
-            if (recurse_stopper > 20) break;в
+            if (recurse_stopper > 20) break;
             freeblock_header = reinterpret_cast<FreeBlock_header*>(page + freeblock_header->get_next_offset());
             recurse_stopper++;
         }
