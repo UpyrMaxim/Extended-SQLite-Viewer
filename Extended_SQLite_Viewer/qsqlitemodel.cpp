@@ -17,7 +17,8 @@ QSQLiteModel::~QSQLiteModel()
 
 QVariant QSQLiteModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if(role == Qt::DisplayRole && orientation == Qt::Horizontal){
+    if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
+    {
          return  TableData.at(section);
     }
     return QVariant();
@@ -65,7 +66,6 @@ bool QSQLiteModel::setData(const QModelIndex &index, const QVariant &value, int 
 void QSQLiteModel::removeRow(int row)
 {
     beginResetModel();
-    qDebug() << "delete row " << row;
     QSqlTableModel::removeRow(row);
     this->select();
     endResetModel();
@@ -84,12 +84,10 @@ Qt::ItemFlags QSQLiteModel::flags(const QModelIndex &index) const
 bool QSQLiteModel::setTableContent()
 {
     this->select();
-    qDebug() << "selected : ";
-
     TableData.clear();
-    for (int i = 0;i < this->record().count(); ++i) {
+    for (int i = 0;i < this->record().count(); ++i)
+    {
         TableData.push_back(this->record().fieldName(i));
-         qDebug() << "selected : "<< this->record().fieldName(i);
     }
 
     return false;
@@ -99,10 +97,7 @@ bool QSQLiteModel::setTableContent()
 int QSQLiteModel::setDataBase(const QString &tableName)
 {
     beginResetModel();
-
-    qDebug() << "choosed tableName: " << tableName;
     this->setTable(tableName);
-    qDebug() << "setTable end: " << tableName;
     setTableContent();
     dataBaseActive = true;
 

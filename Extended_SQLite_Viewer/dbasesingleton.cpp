@@ -15,7 +15,8 @@ void SingletonDestroyer::initialize( DBaseSingleton* p ) {
 
 
 DBaseSingleton& DBaseSingleton::getInstance() {
-    if(!p_instance)     {
+    if(!p_instance)
+    {
         p_instance = new DBaseSingleton(QSqlDatabase::addDatabase("QSQLITE"));
         destroyer.initialize( p_instance);
     }

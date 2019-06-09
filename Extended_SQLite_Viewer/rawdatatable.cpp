@@ -45,14 +45,19 @@ void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
     std::vector<std::string> types;
 
     getTypesList(types,TableName);
-    auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
-    qDebug() << "elemCount: "<< deletedContent.size();
 
+
+  //  auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
+
+    std::vector<std::vector<std::string >> deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
     for (const auto &pair : deletedContent){
-        for (const auto &item : pair){
+        for (const auto &item : pair)
+        {
             qDebug() << QString(item.c_str()) << " - ";
         }
     }
+    QAbstractTableModel::
+
 
     qDebug() << "deleted content end: "<< TableName;
 

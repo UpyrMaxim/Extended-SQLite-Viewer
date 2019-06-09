@@ -29,9 +29,11 @@ QVariant QSQLiteTableList::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    switch (role) {
+    switch (role)
+    {
            case Qt::DisplayRole:
-             if(DBaseSingleton::getInstance().tables().size()){
+             if(DBaseSingleton::getInstance().tables().size())
+             {
                return DBaseSingleton::getInstance().tables().at(index.row());
              } else {
                  return "test";
@@ -39,35 +41,21 @@ QVariant QSQLiteTableList::data(const QModelIndex &index, int role) const
            default:
                break;
     }
-
-
-    // FIXME: Implement me!
     return QVariant();
 }
 
 int QSQLiteTableList::setDataBase(QString dataBaseName)
 {
     beginResetModel();
-    std::cout << "setDataBase start List" << std::endl;
     DBaseSingleton::getInstance().setDatabaseName(dataBaseName);
-    if (!DBaseSingleton::getInstance().open()) {
+    if (!DBaseSingleton::getInstance().open())
+    {
         qDebug() << DBaseSingleton::getInstance().lastError();
         dataBaseActive = false;
         return -1;
     }
-    std::cout << "DB was added ListView" << std::endl;
     dataBaseActive = true;
     endResetModel();
     return 0;
 }
 
-//void* QSQLiteTableList::getDataConection()
-//{
-//    if(dataBaseActive)
-//    {
-//          qInfo() << "return: " << &DBaseSingleton::getInstance() ;
-//        return &DBaseSingleton::getInstance();
-//    }
-//    qInfo() << "return nullPtr";
-//    return nullptr;
-//}
