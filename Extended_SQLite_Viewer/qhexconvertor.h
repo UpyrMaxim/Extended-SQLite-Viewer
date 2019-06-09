@@ -42,7 +42,7 @@ private:
     char byteToCHarView(char);
     void loadBynaryData(QByteArray&,const std::string&,const std::string&);
     void convertToHexView(const QByteArray&, QString&);
-    void resetRawDataBaseObject();
+    void resetRawDataBaseObject(const std::string&);
 
 private:
     Database * m_rawData = nullptr;
