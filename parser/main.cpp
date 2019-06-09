@@ -5,7 +5,7 @@
 
 
 int main() {
-    auto db = new Database("places.sqlite");
+    auto db = new Database("new_test_db.sqlite");
     db->parse_database();
 //    db->reset_path("testing2.db");
     db->parse_database();
@@ -24,7 +24,7 @@ int main() {
         }
     }
 
-    auto raw_data = db->get_raw_data("mos");
+    auto raw_data = db->get_raw_data("test");
 
     for (auto record : raw_data){
         for (auto byte : record){
