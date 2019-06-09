@@ -376,9 +376,9 @@ Window {
 
     // на лінухі і вінді по різному визначається url
     function urlToPath(urlString) {
-        let s
+        var s;
         if (urlString.startsWith("file:///")) {
-            let k = urlString.charAt(9) === ':' ? 8 : 7
+            var k = urlString.charAt(9) === ':' ? 8 : 7;
             s = urlString.substring(k)
         } else {
             s = urlString

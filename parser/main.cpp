@@ -5,40 +5,43 @@
 
 
 int main() {
-    auto db = new Database();
-    db->reset_path("new_test_db.sqlite");
+    auto db = new Database("testing3.db");
+    db->parse_database();
+//    db->reset_path("testing2.db");
     db->parse_database();
     db->print_db_header();
     for (auto it : db->get_tables_pages()){
         std::cout << "You have table " << it.first << std::endl;
     }
-    for (auto page : db->get_raw_data("test")) {
-        for (auto byte : page) {
-            std::cout << "RAW data from freeblock:\n" << byte << std::endl;
-        }
-    }
-
-
-    auto all_data = db->get_all_raw_deleted_data();
-    for (auto it : all_data){
-        for (auto freeblock : it.second){
+    auto data = db->get_all_raw_deleted_data();
+    for (auto page : data){
+        std::cout << "Data from page " << page.first << std::endl;
+        for (auto freeblock : page.second){
             for (auto byte : freeblock){
                 std::cout << byte;
             }
+            std::cout << std::endl;
+        }
+    }
+
+    auto raw_data = db->get_raw_data("table1");
+
+    for (auto record : raw_data){
+        for (auto byte : record){
+            std :: cout << std::hex << (int)byte << ' ';
         }
     }
 
 
-
-
-
-    std::vector<std::string> types = {"INT","TEXT", "TEXT"};
-    for (auto pair : db->get_parsed_data("table2", types)){
-        std::cout << "We got type " << pair.first << " and data in it is: " << pair.second << std::endl;
+    std::cout << std::endl;
+    std::vector<std::string> types = {"INT","TEXT","BLOB","FLOAT"};
+    std::cout << "parsed data: "<< std::endl;
+    auto parsed_data = db->get_parsed_data("table1", types);
+    for (auto page : parsed_data){
+        for (auto record : page){
+            std::cout << record << std::endl;
+        }
     }
 
-
-
     delete db;
-    return 0;
 }

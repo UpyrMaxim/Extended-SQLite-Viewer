@@ -34,6 +34,9 @@ void Database::reset_path(std::string file_name) {
     db_header = reinterpret_cast<SQLite_header*>(buffer.data());
     unsigned long pages_amount = db_header->get_pages_amount();
     auto page_size = db_header->get_database_page_size();
+    pages.clear();
+    deleted_data.clear();
+    tables_pages.clear();
     for (size_t i{0}; i < pages_amount; i++){
         auto page = new unsigned char[page_size];
         for (size_t j{0}; j < page_size; j++ ){
@@ -41,6 +44,7 @@ void Database::reset_path(std::string file_name) {
         }
         pages.emplace_back(page);
     }
+
 //    file.close();
 }
 
@@ -87,7 +91,6 @@ void Database::parse_page(int number){
 
 
 void Database::scan_freeblocks() {
-    omp_set_num_threads(std::thread::hardware_concurrency());
     for (int it = 0;it < db_header->get_pages_amount(); it++){
         parse_page(it);
     }

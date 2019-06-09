@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <fstream>
 #include <mutex>
-#include <omp.h>
 #include <thread>
 #include "FreeBlock_parser.h"
 
