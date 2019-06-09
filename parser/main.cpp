@@ -30,12 +30,12 @@ int main() {
 
 
 
-//
-//
-//    std::vector<std::string> types = {"INT","TEXT", "TEXT"};
-//    for (auto pair : db->get_parsed_data("table2", types)){
-//        std::cout << "We got type " << pair.first << " and data in it is: " << pair.second << std::endl;
-//    }
+
+
+    std::vector<std::string> types = {"INT","TEXT", "TEXT"};
+    for (auto pair : db->get_parsed_data("table2", types)){
+        std::cout << "We got type " << pair.first << " and data in it is: " << pair.second << std::endl;
+    }
 
 
 

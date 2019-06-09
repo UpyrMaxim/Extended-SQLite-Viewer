@@ -8,6 +8,7 @@
 #include <vector>
 #include <Database.h>
 
+
 class SimpleFileGuard {
 public:
     SimpleFileGuard(std::ifstream &file) : fileUnderProtect(&file) { }
@@ -39,9 +40,12 @@ signals:
 public slots:
 private:
     char byteToCHarView(char);
+    void loadBynaryData(QByteArray&,const std::string&,const std::string&);
+    void convertToHexView(const QByteArray&, QString&);
+    void resetRawDataBaseObject();
 
 private:
-    Database * m_rawData;
+    Database * m_rawData = nullptr;
 };
 
 #endif // QHEXCONVERTOR_H

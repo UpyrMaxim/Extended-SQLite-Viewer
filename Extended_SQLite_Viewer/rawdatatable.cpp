@@ -1,11 +1,11 @@
 #include "rawdatatable.h"
 #include "dbasesingleton.h"
 #include <QtSql>
+#include <QDebug>
 
 RAWDataTable::RAWDataTable(QObject *parent)
     : QAbstractTableModel(parent)
 {
-            m_rawData = new Database();
 }
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
@@ -41,19 +41,21 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
 
 void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 {
-    if(m_rawData == nullptr){
-        m_rawData = new Database();;
-    }
-    qDebug() << "init path: "<< dbPath;
-
-    qDebug() << "deleted content start: "<< TableName;
-    m_rawData->reset_path(dbPath.toLocal8Bit().data());
+    resetRawDataBaseObject(dbPath.toLocal8Bit().data());
     std::vector<std::string> types;
 
     getTypesList(types,TableName);
-//    for (auto pair : m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types)){
-//        std::cout << "We got type " << pair << " and data in it is: " << pair.second << std::endl;
-//    }
+    auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
+    qDebug() << "elemCount: "<< deletedContent.size();
+
+    for (const auto &pair : deletedContent){
+        for (const auto &item : pair){
+            qDebug() << QString(item.c_str()) << " - ";
+        }
+    }
+
+    qDebug() << "deleted content end: "<< TableName;
+
 }
 
 void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString &tableName)
@@ -62,15 +64,31 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString
     for(int i = 0; i < var.count(); ++i)
     {
         outPut.push_back(convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName()));
+        qDebug() << QString(outPut.rbegin()->c_str());
     }
 }
 
-std::string  RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
+std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
 {
     if(TypeName == "int")
         return  "INT";
     if(TypeName == "QString")
         return "TEXT";
+    if(TypeName == "float")
+        return "REAL";
+    if(TypeName == "double")
+        return "REAL";
+    // просто набор байтиков :)
+    return "BLOB"; // хз как называется
+}
 
-    return "undefined";
+void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
+{
+    if(m_rawData != nullptr)
+    {
+         delete m_rawData;
+    }
+    m_rawData = new Database();
+    m_rawData->reset_path(dbPath);
+    m_rawData->parse_database();
 }

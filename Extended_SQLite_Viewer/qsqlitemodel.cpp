@@ -2,6 +2,9 @@
 #include <iostream>
 #include <QDebug>
 
+
+#include "dbasesingleton.h"
+
 QSQLiteModel::QSQLiteModel(QObject *parent)
     : QSqlTableModel (parent, DBaseSingleton::getInstance()), rowCountVal(0), columnCountVal(0), TableData(nullptr)
 {
@@ -66,6 +69,7 @@ void QSQLiteModel::removeRow(int row)
     QSqlTableModel::removeRow(row);
     this->select();
     endResetModel();
+    QSqlTableModel::submitAll();
 
 }
 

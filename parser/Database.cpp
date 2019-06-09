@@ -41,6 +41,7 @@ void Database::reset_path(std::string file_name) {
         }
         pages.emplace_back(page);
     }
+//    file.close();
 }
 
 Database::~Database() {

@@ -39,6 +39,8 @@ QVariant QSQLiteTableList::data(const QModelIndex &index, int role) const
            default:
                break;
     }
+
+
     // FIXME: Implement me!
     return QVariant();
 }
