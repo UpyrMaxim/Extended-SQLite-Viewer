@@ -13,13 +13,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9d2780d6-78c5-465e-b774-cac65ad7652f" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../Extended_SQLite_Viewer/Extended_SQLite_Viewer.pro" beforeDir="false" afterPath="$PROJECT_DIR$/../Extended_SQLite_Viewer/Extended_SQLite_Viewer.pro" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Extended_SQLite_Viewer/main.qml" beforeDir="false" afterPath="$PROJECT_DIR$/../Extended_SQLite_Viewer/main.qml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Extended_SQLite_Viewer/qhexconvertor.h" beforeDir="false" afterPath="$PROJECT_DIR$/../Extended_SQLite_Viewer/qhexconvertor.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Database.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/Database.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FreeBlock_parser.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/FreeBlock_parser.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -107,19 +102,19 @@
       </usages-collector>
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
-          <entry key="cpp" value="16471" />
+          <entry key="cpp" value="16590" />
           <entry key="h" value="2096" />
           <entry key="hpp" value="60" />
           <entry key="mm" value="5" />
           <entry key="sql" value="25" />
-          <entry key="txt" value="629" />
+          <entry key="txt" value="643" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
           <entry key="CMakeLists.txt" value="82" />
-          <entry key="ObjectiveC" value="18632" />
-          <entry key="PLAIN_TEXT" value="547" />
+          <entry key="ObjectiveC" value="18751" />
+          <entry key="PLAIN_TEXT" value="561" />
           <entry key="Scratch" value="25" />
         </counts>
       </usages-collector>
@@ -160,20 +155,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Database.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="58">
-              <caret line="230" selection-start-line="230" selection-end-line="230" />
+            <state>
+              <caret line="86" column="44" selection-start-line="86" selection-start-column="44" selection-end-line="86" selection-end-column="44" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="96">
-              <caret line="36" column="64" selection-start-line="36" selection-start-column="64" selection-end-line="36" selection-end-column="64" />
+            <state relative-caret-position="153">
+              <caret line="26" column="41" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -216,9 +211,9 @@
         <option value="$PROJECT_DIR$/FreeBlock_parser.h" />
         <option value="$PROJECT_DIR$/Database.h" />
         <option value="$PROJECT_DIR$/CMakeLists.txt" />
-        <option value="$PROJECT_DIR$/Database.cpp" />
         <option value="$PROJECT_DIR$/FreeBlock_parser.cpp" />
         <option value="$PROJECT_DIR$/main.cpp" />
+        <option value="$PROJECT_DIR$/Database.cpp" />
       </list>
     </option>
   </component>
@@ -339,7 +334,7 @@
       <workItem from="1559912997763" duration="303000" />
       <workItem from="1560022989106" duration="4194000" />
       <workItem from="1560070502719" duration="1457000" />
-      <workItem from="1560075261111" duration="3585000" />
+      <workItem from="1560075261111" duration="5460000" />
     </task>
     <task id="LOCAL-00001" summary="Split into pages bug fixed">
       <created>1558093462256</created>
@@ -425,11 +420,18 @@
       <option name="project" value="LOCAL" />
       <updated>1560071721807</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="sisgv defeated">
+      <created>1560079276327</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1560079276327</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="162272000" />
+    <option name="totallyTimeSpent" value="164147000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -442,14 +444,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1366" height="732" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.225" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.43934426" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="1.0" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.63278687" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -486,7 +487,8 @@
     <MESSAGE value="minor bug fixes" />
     <MESSAGE value="Merge branch 'develop_max_upyr' of https://github.com/UpyrMaxim/Extended-SQLite-Viewer into develop_denis_khvastunov&#10;&#10;table search bug fixed" />
     <MESSAGE value="pre merge commit" />
-    <option name="LAST_COMMIT_MESSAGE" value="pre merge commit" />
+    <MESSAGE value="sisgv defeated" />
+    <option name="LAST_COMMIT_MESSAGE" value="sisgv defeated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -591,13 +593,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Database.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="58">
-          <caret line="230" selection-start-line="230" selection-end-line="230" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/FreeBlock_parser.cpp">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="645">
@@ -607,11 +602,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="96">
-          <caret line="36" column="64" selection-start-line="36" selection-start-column="64" selection-end-line="36" selection-end-column="64" />
+        <state relative-caret-position="153">
+          <caret line="26" column="41" selection-start-line="26" selection-start-column="41" selection-end-line="26" selection-end-column="41" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Database.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret line="86" column="44" selection-start-line="86" selection-start-column="44" selection-end-line="86" selection-end-column="44" />
         </state>
       </provider>
     </entry>

@@ -5,7 +5,7 @@
 
 
 int main() {
-    auto db = new Database("testing3.db");
+    auto db = new Database("places.sqlite");
     db->parse_database();
 //    db->reset_path("testing2.db");
     db->parse_database();
@@ -24,7 +24,7 @@ int main() {
         }
     }
 
-    auto raw_data = db->get_raw_data("table1");
+    auto raw_data = db->get_raw_data("mos");
 
     for (auto record : raw_data){
         for (auto byte : record){
@@ -34,11 +34,11 @@ int main() {
 
 
     std::cout << std::endl;
-    std::vector<std::string> types = {"INT","TEXT","BLOB","FLOAT"};
+    std::vector<std::string> types = {"INT","INT","TEXT"};
     std::cout << "parsed data: "<< std::endl;
-    auto parsed_data = db->get_parsed_data("table1", types);
+    auto parsed_data = db->get_parsed_data("test", types);
     for (auto page : parsed_data){
-        for (auto record : page){
+        for (auto &record : page){
             std::cout << record << std::endl;
         }
     }

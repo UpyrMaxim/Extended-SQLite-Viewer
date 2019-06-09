@@ -74,6 +74,7 @@ void Database::parse_page(int number){
         size_t freeblock_offset = btree_header->get_first_freeblock_position();
         auto freeblock_header = reinterpret_cast<FreeBlock_header *>(page + freeblock_offset);
         std::vector<std::vector<uint8_t >> freeblocks_vector;
+        int recurse_stopper = 0;
         for (;;) {
             std::vector<uint8_t> free_block_data;
             for (size_t i{0}; i < freeblock_header->get_length(); i++) {
@@ -83,7 +84,9 @@ void Database::parse_page(int number){
 //          free_block_data.clear();
             freeblock_offset = freeblock_header->get_next_offset();
             if (freeblock_offset == 0) break;
+            if (recurse_stopper > 20) break;в
             freeblock_header = reinterpret_cast<FreeBlock_header*>(page + freeblock_header->get_next_offset());
+            recurse_stopper++;
         }
         deleted_data.emplace(number + 1, freeblocks_vector);
     }
