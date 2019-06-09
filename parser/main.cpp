@@ -5,7 +5,7 @@
 
 
 int main() {
-    auto db = new Database("new_test_db.sqlite");
+    auto db = new Database("new_test_db_4.sqlite");
     db->parse_database();
 //    db->reset_path("testing2.db");
     db->parse_database();
