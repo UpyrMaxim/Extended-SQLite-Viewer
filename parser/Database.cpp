@@ -86,7 +86,6 @@ void Database::parse_page(int number){
 
 
 void Database::scan_freeblocks() {
-    omp_set_num_threads(std::thread::hardware_concurrency());
     for (int it = 0;it < db_header->get_pages_amount(); it++){
         parse_page(it);
     }

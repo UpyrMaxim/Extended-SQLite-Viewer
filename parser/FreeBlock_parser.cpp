@@ -83,6 +83,14 @@ std::vector<std::pair<std::string,std::string>> FreeBlock_parser::parse_free_blo
             data_from_freeblock.emplace_back(std::pair<std::string,std::string>(types_sequense[i],std::to_string(little_endian)));
         }
 
+        if (value == 7){
+            std::vector<uint8_t> big_endian;
+            big_endian.resize(static_cast<size_t>(data_length));
+            for (int j{0}; j < data_length; j ++){
+                big_endian[j] = (freeblock[unreaded_data_offset + j]);
+            }
+        }
+
         if (value > 12){
 //            std::cout << "TEXT/BLOB is like this: " << std::endl;
             std::string data;
