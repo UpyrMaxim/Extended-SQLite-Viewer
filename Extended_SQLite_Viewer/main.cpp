@@ -34,10 +34,6 @@ int main(int argc, char *argv[])
 
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     engine.rootContext()->setContextProperty("fixedFont", fixedFont);
-
-//    MySQLTableModel model{};
-//    engine.rootContext()->setContextProperty(QString("myTableDataModel"), &model);
-
     engine.load(url);
 
     return app.exec();

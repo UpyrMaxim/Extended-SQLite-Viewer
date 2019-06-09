@@ -31,9 +31,7 @@ int RAWDataTable::columnCount(const QModelIndex &parent) const
 
 QVariant RAWDataTable::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
-        return QVariant();
-    if(deletedContent.size() > static_cast<size_t>(index.row()))
+    if(deletedContent.size() > static_cast<size_t>(index.row()) && index.isValid())
     {
         if(deletedContent.at(static_cast<size_t>(index.row())).size() > static_cast<size_t>(index.column()))
         {
@@ -50,16 +48,8 @@ void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
     std::vector<std::string> types;
     tableName = TableName.toLocal8Bit().data();
     getTypesList(types);
-
+    beginResetModel();
     deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
-      beginResetModel();
-    for(const auto & val : deletedContent){
-        for(const auto & str : val){
-            qDebug() << str.c_str();
-        }
-    }
-//    deletedContent.clear();
-//    deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
     endResetModel();
 }
 
@@ -69,7 +59,6 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut)
     for(int i = 0; i < var.count(); ++i)
     {
         outPut.push_back(convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName()));
-        qDebug() << QString(outPut.rbegin()->c_str());
     }
 }
 
@@ -84,7 +73,7 @@ std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
     if(TypeName == "double")
         return "FLOAT";
     // просто набор байтиков :)
-    return "BLOB"; // хз как называется
+    return "BLOB";
 }
 
 void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
@@ -98,14 +87,3 @@ void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
     m_rawData->parse_database();
 }
 
-//void RAWDataTable::setTableContent()
-//{
-//    this->select();
-//    TableData.clear();
-//    for (int i = 0;i < this->record().count(); ++i)
-//    {
-//        TableData.push_back(this->record().fieldName(i));
-//    }
-
-//    return false;
-//}
