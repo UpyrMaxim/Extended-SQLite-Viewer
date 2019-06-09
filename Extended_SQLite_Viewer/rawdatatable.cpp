@@ -10,12 +10,7 @@ RAWDataTable::RAWDataTable(QObject *parent)
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
 {
-
-    if(!tableName.size())
-    {
-        return DBaseSingleton::getInstance().record(tableName.c_str()).fieldName(section);
-    }
-    return QVariant();
+    return DBaseSingleton::getInstance().record(tableName.c_str()).fieldName(section);
 }
 
 int RAWDataTable::rowCount(const QModelIndex &parent) const
@@ -30,9 +25,7 @@ int RAWDataTable::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-    if(deletedContent.size())
-        return static_cast<int>(deletedContent[0].size());
-    return 0;
+    return DBaseSingleton::getInstance().record(tableName.c_str()).count();
     // FIXME: Implement me!
 }
 

@@ -176,7 +176,7 @@ Window {
                 height: parent.height
                 text: qsTr("Formated RAW data")
                 onClicked: {
-                   tablelContentMode.setDataBase(tableDataTabButton.text)
+                   rawTablelContentModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text)
                 }
             }
             TabButton {
@@ -246,9 +246,11 @@ Window {
                 implicitHeight: 20
                 width: 150
                 height: 20
+                clip: true
                 Text {
                     id: tableColumn
                     text: display
+                    clip: true
                 }
             }
 
@@ -260,13 +262,15 @@ Window {
                 Repeater {
                     model: mainTableView.columns
                     Label {
+                        id: dataHeader
                         width: 151
                         height: 26
                         text: tablelContentMode.headerData(modelData, Qt.Horizontal)
                         color: '#333333'
                         padding: 10
                         verticalAlignment: Text.AlignVCenter
-
+                        ToolTip.text: dataHeader.text
+                        clip: true
                         background: Rectangle { color: "#aaaaaa" }
                     }
                 }
@@ -288,6 +292,8 @@ Window {
                            text: qsTr("X")
                            color: "#ff0000"
                            anchors.centerIn: parent
+                           clip: true
+
                        }
                    }
                 }
@@ -309,7 +315,7 @@ Window {
             anchors.rightMargin: 0
             anchors.bottomMargin: 0
             anchors.leftMargin: 1
-//            topMargin: rawDataColumnsHeader.implicitHeight
+            topMargin: rawDataColumnsHeader.implicitHeight
             anchors.fill: parent
             columnSpacing: 1
             rowSpacing: 1
@@ -328,6 +334,8 @@ Window {
                 Text {
                     id: rawTableColumn
                     text: display
+                    clip: true
+                    ToolTip.text: rawTableColumn.text
                 }
             }
 
@@ -339,13 +347,15 @@ Window {
                 Repeater {
                     model: rawDataTableView.columns
                     Label {
+                        id: dataLable
                         width: 151
                         height: 26
                         text: rawTablelContentModel.headerData(modelData, Qt.Horizontal)
                         color: '#333333'
                         padding: 10
                         verticalAlignment: Text.AlignVCenter
-
+                        clip: true
+                        ToolTip.text: dataLable.text
                         background: Rectangle { color: "#aaaaaa" }
                     }
                 }
