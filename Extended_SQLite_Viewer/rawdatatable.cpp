@@ -18,7 +18,7 @@ int RAWDataTable::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-
+    return static_cast<int>(deletedContent.size());
     // FIXME: Implement me!
 }
 
@@ -26,7 +26,9 @@ int RAWDataTable::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
         return 0;
-
+    if(deletedContent.size())
+        return static_cast<int>(deletedContent[0].size());
+    return 0;
     // FIXME: Implement me!
 }
 
@@ -35,8 +37,7 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
-    // FIXME: Implement me!
-    return QVariant();
+    return deletedContent.at(static_cast<size_t>(index.row())).at(static_cast<size_t>(index.column())).c_str();
 }
 
 void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
@@ -46,21 +47,16 @@ void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 
     getTypesList(types,TableName);
 
-
-  //  auto deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
-
-    std::vector<std::vector<std::string >> deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
-    for (const auto &pair : deletedContent){
-        for (const auto &item : pair)
-        {
-            qDebug() << QString(item.c_str()) << " - ";
-        }
-    }
-    QAbstractTableModel::
-
-
-    qDebug() << "deleted content end: "<< TableName;
-
+//    deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
+      beginResetModel();
+//    for(const auto & val : deletedContent){
+//        for(const auto & str : val){
+//            qDebug() << str.c_str();
+//        }
+//    }
+    deletedContent.clear();
+    deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
+    endResetModel();
 }
 
 void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString &tableName)
@@ -80,9 +76,9 @@ std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
     if(TypeName == "QString")
         return "TEXT";
     if(TypeName == "float")
-        return "REAL";
+        return "FLOAT";
     if(TypeName == "double")
-        return "REAL";
+        return "FLOAT";
     // просто набор байтиков :)
     return "BLOB"; // хз как называется
 }
@@ -97,3 +93,15 @@ void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
     m_rawData->reset_path(dbPath);
     m_rawData->parse_database();
 }
+
+//void RAWDataTable::setTableContent()
+//{
+//    this->select();
+//    TableData.clear();
+//    for (int i = 0;i < this->record().count(); ++i)
+//    {
+//        TableData.push_back(this->record().fieldName(i));
+//    }
+
+//    return false;
+//}

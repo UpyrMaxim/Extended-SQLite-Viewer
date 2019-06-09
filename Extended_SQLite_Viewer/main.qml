@@ -112,15 +112,21 @@ Window {
 
                            tableDataTabButton.text = display
 
-                           if(bar.currentIndex == 0){
-                               tablelContentMode.setDataBase(display)
+                           if(bar.currentIndex == 0)
+                           {
+                               tablelContentMode.setDataBase(tableDataTabButton.text)
                            }
 
                            if(bar.currentIndex == 1)
+                           {
+                               //tablelContentMode.setDataBase(display)
                                rawTablelContentModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text)
+                           }
 
                            if(bar.currentIndex == 2)
+                           {
                                hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);
+                           }
                         }
                     }
                 }
@@ -312,38 +318,38 @@ Window {
                 id: rawTablelContentModel
             }
 
-//            delegate: Rectangle {
-//                id: rawTableRowTextField
-//                color: "#CEDCDD"
-//                implicitWidth: 150
-//                implicitHeight: 20
-//                width: 150
-//                height: 20
-//                Text {
-//                    id: rawTableColumn
-//                    text: display
-//                }
-//            }
+            delegate: Rectangle {
+                id: rawTableRowTextField
+                color: "#CEDCDD"
+                implicitWidth: 150
+                implicitHeight: 20
+                width: 150
+                height: 20
+                Text {
+                    id: rawTableColumn
+                    text: display
+                }
+            }
 
-//            Row {
-//                id: rawDataColumnsHeader
-//                y: mainTableView.contentY
-//                z: 3
+            Row {
+                id: rawDataColumnsHeader
+                y: mainTableView.contentY
+                z: 3
 
-//                Repeater {
-//                    model: rawDataTableView.columns
-//                    Label {
-//                        width: 151
-//                        height: 26
-//                        text: rawTablelContentModel.headerData(modelData, Qt.Horizontal)
-//                        color: '#333333'
-//                        padding: 10
-//                        verticalAlignment: Text.AlignVCenter
+                Repeater {
+                    model: rawDataTableView.columns
+                    Label {
+                        width: 151
+                        height: 26
+                        text: rawTablelContentModel.headerData(modelData, Qt.Horizontal)
+                        color: '#333333'
+                        padding: 10
+                        verticalAlignment: Text.AlignVCenter
 
-//                        background: Rectangle { color: "#aaaaaa" }
-//                    }
-//                }
-//            }
+                        background: Rectangle { color: "#aaaaaa" }
+                    }
+                }
+            }
         }
    }
 
