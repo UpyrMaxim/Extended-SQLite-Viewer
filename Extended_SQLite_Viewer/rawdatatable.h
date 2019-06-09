@@ -26,10 +26,11 @@ public:
 
 private:
     Database * m_rawData = nullptr;
+    std::string tableName;
 
 private:
     std::vector<std::vector<std::string >> deletedContent;
-    void getTypesList(std::vector<std::string>&, const QString &);
+    void getTypesList(std::vector<std::string>&);
     std::string convertQTTypetoSQLType(const QString &);
     void resetRawDataBaseObject(const std::string&);
 //    void setTableContent();

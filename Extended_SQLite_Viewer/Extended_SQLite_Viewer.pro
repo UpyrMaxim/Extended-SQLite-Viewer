@@ -43,23 +43,10 @@ HEADERS += \
     rawdatatable.h
 
 
-unix:!macx|win32: LIBS += -L$$PWD/../Lib/ -lparserlib
+unix|win32: LIBS += -L$$PWD/../Lib/ -lparserlib
 
 INCLUDEPATH += $$PWD/../parser
 DEPENDPATH += $$PWD/../parser
 
-#win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/parserlib.lib
-#else:unix:!macx|win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/libparserlib.a
-
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../Lib/release/ -lparserlib
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../Lib/debug/ -lparserlib
-else:unix: LIBS += -L$$PWD/../Lib/ -lparserlib
-
-INCLUDEPATH += $$PWD/../parser
-DEPENDPATH += $$PWD/../parser
-
-win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../Lib/release/libparserlib.a
-else:win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../Lib/debug/libparserlib.a
-else:win32:!win32-g++:CONFIG(release, debug|release): PRE_TARGETDEPS += $$PWD/../Lib/release/parserlib.lib
-else:win32:!win32-g++:CONFIG(debug, debug|release): PRE_TARGETDEPS += $$PWD/../Lib/debug/parserlib.lib
-else:unix: PRE_TARGETDEPS += $$PWD/../Lib/libparserlib.a
+win32:!win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/parserlib.lib
+else:unix|win32-g++: PRE_TARGETDEPS += $$PWD/../Lib/libparserlib.a

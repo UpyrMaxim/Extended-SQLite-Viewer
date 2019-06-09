@@ -10,7 +10,11 @@ RAWDataTable::RAWDataTable(QObject *parent)
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    // FIXME: Implement me!
+
+    if(!tableName.size())
+    {
+        return DBaseSingleton::getInstance().record(tableName.c_str()).fieldName(section);
+    }
     return QVariant();
 }
 
@@ -36,32 +40,39 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
         return QVariant();
+    if(deletedContent.size() > static_cast<size_t>(index.row()))
+    {
+        if(deletedContent.at(static_cast<size_t>(index.row())).size() > static_cast<size_t>(index.column()))
+        {
+            return deletedContent.at(static_cast<size_t>(index.row())).at(static_cast<size_t>(index.column())).c_str();
+        }
+    }
 
-    return deletedContent.at(static_cast<size_t>(index.row())).at(static_cast<size_t>(index.column())).c_str();
+    return QVariant();
 }
 
 void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
 {
     resetRawDataBaseObject(dbPath.toLocal8Bit().data());
     std::vector<std::string> types;
+    tableName = TableName.toLocal8Bit().data();
+    getTypesList(types);
 
-    getTypesList(types,TableName);
-
-//    deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
+    deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
       beginResetModel();
-//    for(const auto & val : deletedContent){
-//        for(const auto & str : val){
-//            qDebug() << str.c_str();
-//        }
-//    }
-    deletedContent.clear();
-    deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
+    for(const auto & val : deletedContent){
+        for(const auto & str : val){
+            qDebug() << str.c_str();
+        }
+    }
+//    deletedContent.clear();
+//    deletedContent = {{"TEst1","test1_1","test1_2"},{"TEst2","test2_1","test2_2"},{"TEst3","test3_1","test3_2"}};
     endResetModel();
 }
 
-void RAWDataTable::getTypesList(std::vector<std::string> & outPut, const QString &tableName)
+void RAWDataTable::getTypesList(std::vector<std::string> & outPut)
 {
-    auto var = DBaseSingleton::getInstance().record(tableName);
+    auto var = DBaseSingleton::getInstance().record(tableName.c_str());
     for(int i = 0; i < var.count(); ++i)
     {
         outPut.push_back(convertQTTypetoSQLType(QVariant(var.field(i).type()).typeName()));
