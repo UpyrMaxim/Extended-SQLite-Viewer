@@ -2,18 +2,20 @@
 #include <QDebug>
 #include <QTextStream>
 
-QHexConvertor::QHexConvertor(QObject *parent) : QObject(parent)
+QHexConvertor::QHexConvertor(RawDataBaseParserWrapper * RawData, QObject *parent) : QObject(parent), m_RawDataObj(RawData)
 {
+
 }
 
-QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableName)
+QString QHexConvertor::getHexData(const QString TableName)
 {
-    if(FilePath.size() && TableName.size())
+    qDebug() << "Get Hex " <<TableName.size() ;
+    if(TableName.size())
     {
         QByteArray bitArray;
         QString resultStr;
 
-        loadBynaryData(bitArray,FilePath.toLocal8Bit().data(),TableName.toLocal8Bit().data());
+        loadBynaryData(bitArray,TableName.toLocal8Bit().data());
         if(!bitArray.size())
         {
             return QString("HEX DATA ABSENT");
@@ -25,6 +27,12 @@ QString QHexConvertor::getHexData(const QString &FilePath, const QString &TableN
     return QString("HEX DATA FIELD");
 }
 
+void QHexConvertor::resetRawDB(const QString path)
+{
+    auto pathStr = path.toUtf8().data();
+    m_RawDataObj->resetRawDataBase(pathStr);
+}
+
 char QHexConvertor::byteToCHarView(char charItem)
 {
     if ( (charItem < 0x20) || (charItem > 0x7e))
@@ -34,19 +42,21 @@ char QHexConvertor::byteToCHarView(char charItem)
     return charItem;
 }
 
-void QHexConvertor::loadBynaryData(QByteArray &bitArray, const std::string& FilePath, const std::string& TableName)
+void QHexConvertor::loadBynaryData(QByteArray &bitArray, const std::string& TableName)
 {
-   resetRawDataBaseObject(FilePath);
-   auto tableData = m_rawData->get_raw_data(TableName);
-   if(!tableData.size())
-   {
-        return;
-   }
-   for (auto i : tableData)
-   {
-       for (auto  elem : i)
+   if(m_RawDataObj->getRawDataBaseObject()){
+       auto tableData = m_RawDataObj->getRawDataBaseObject()->get_raw_data(TableName);
+
+       if(!tableData.size())
        {
-         bitArray.push_back(static_cast<char>(elem));
+            return;
+       }
+       for (auto i : tableData)
+       {
+           for (auto  elem : i)
+           {
+             bitArray.push_back(static_cast<char>(elem));
+           }
        }
    }
 }
@@ -77,15 +87,3 @@ void QHexConvertor::convertToHexView(const QByteArray &bitArray, QString& result
         }
     }
 }
-
-void QHexConvertor::resetRawDataBaseObject(const std::string& dbPath)
-{
-    if(m_rawData != nullptr)
-    {
-         delete m_rawData;
-    }
-    m_rawData = new Database();
-    m_rawData->reset_path(dbPath);
-    m_rawData->parse_database();
-}
-

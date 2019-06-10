@@ -7,6 +7,7 @@
 #include <memory>
 #include <vector>
 #include <Database.h>
+#include "rawdatabaseparserwrapper.h"
 
 
 class SimpleFileGuard {
@@ -31,21 +32,22 @@ class QHexConvertor : public QObject
 {
     Q_OBJECT
 public:
-    explicit QHexConvertor(QObject *parent = nullptr);
+    QHexConvertor(RawDataBaseParserWrapper *,QObject *parent = nullptr);
 
-    Q_INVOKABLE QString getHexData(const QString &,const QString &);
+    Q_INVOKABLE QString getHexData(const QString = "");
+    Q_INVOKABLE void resetRawDB(const QString = "");
 
 signals:
 
 public slots:
 private:
     char byteToCHarView(char);
-    void loadBynaryData(QByteArray&,const std::string&,const std::string&);
+    void loadBynaryData(QByteArray&,const std::string&);
     void convertToHexView(const QByteArray&, QString&);
-    void resetRawDataBaseObject(const std::string& dbPath);
+
 
 private:
-    Database * m_rawData = nullptr;
+    RawDataBaseParserWrapper * m_RawDataObj;
 };
 
 #endif // QHEXCONVERTOR_H

@@ -12,6 +12,8 @@
 #include "qhexconvertor.h"
 #include "rawdatatable.h"
 
+#include "rawdatabaseparserwrapper.h"
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -21,8 +23,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<QSQLiteModel>("SQliteModel", 1, 0, "SQliteModel");
     qmlRegisterType<QSQLiteTableList>("SQliteTableList", 1, 0, "SQliteTableList");
-    qmlRegisterType<QHexConvertor>("QHexConvertor", 1, 0, "QHexConvertor");
-    qmlRegisterType<RAWDataTable>("RAWDataTable", 1, 0, "RAWDataTable");
+
 
     QQmlApplicationEngine engine;
     const QUrl url(QStringLiteral("qrc:/main.qml"));
@@ -31,6 +32,20 @@ int main(int argc, char *argv[])
         if (!obj && url == objUrl)
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
+
+    // общие данные
+    std::vector<RawDataBaseParserWrapper*> RDBParser;
+    RDBParser.emplace_back(new RawDataBaseParserWrapper());
+
+    QHexConvertor hexConvertor(RDBParser.front());
+    RAWDataTable rawDataTable(RDBParser.front());
+
+    engine.rootContext()->setContextProperty(QString("QHexConvertor"), &hexConvertor);
+    engine.rootContext()->setContextProperty(QString("RAWDataTable"), &rawDataTable);
+
+//    qmlRegisterType<QHexConvertor>("QHexConvertor", 1, 0, "QHexConvertor");
+//    qmlRegisterType<RAWDataTable>("RAWDataTable", 1, 0, "RAWDataTable");
+
 
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     engine.rootContext()->setContextProperty("fixedFont", fixedFont);

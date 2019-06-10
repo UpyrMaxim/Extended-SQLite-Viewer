@@ -6,8 +6,8 @@ import QtQuick.Layouts 1.3
 
 import SQliteModel 1.0
 import SQliteTableList 1.0
-import QHexConvertor 1.0
-import RAWDataTable 1.0
+//import QHexConvertor 1.0
+//import RAWDataTable 1.0
 
 
 
@@ -53,7 +53,11 @@ Window {
         }
 
         MenuItem {
-            text: "About"
+            text: "Reload"
+            onClicked: {
+                QHexConvertor.resetRawDB(urlToPath(fileDialog.fileUrls.toString()));
+                //reloadTargetTab();
+            }
         }
 
         MenuItem {
@@ -111,22 +115,7 @@ Window {
                         onClicked:{
 
                            tableDataTabButton.text = display
-
-                           if(bar.currentIndex == 0)
-                           {
-                               tablelContentMode.setDataBase(tableDataTabButton.text)
-                           }
-
-                           if(bar.currentIndex == 1)
-                           {
-                               //tablelContentMode.setDataBase(display)
-                               rawTablelContentModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text)
-                           }
-
-                           if(bar.currentIndex == 2)
-                           {
-                               hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);
-                           }
+                           reloadTargetTab();
                         }
                     }
                 }
@@ -144,8 +133,9 @@ Window {
         onAccepted: {
             console.log("You chose: " + fileDialog.fileUrls);
             console.log("converted to : " + urlToPath(fileDialog.fileUrls.toString()));
-
+            QHexConvertor.resetRawDB(urlToPath(fileDialog.fileUrls.toString()));
             tableListModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()));
+           // reloadTargetTab();
         }
         onRejected: {
             console.log("Canceled")
@@ -176,17 +166,14 @@ Window {
                 height: parent.height
                 text: qsTr("Formated RAW data")
                 onClicked: {
-                   rawTablelContentModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text)
+                   RAWDataTable.setDataBase(tableDataTabButton.text)
                 }
             }
             TabButton {
                 height: parent.height
                 text: qsTr("hex")
-                QHexConvertor {
-                    id: hexConvertor
-                }
                 onClicked: {
-                  hexText.text = hexConvertor.getHexData(urlToPath(fileDialog.fileUrls.toString()),tableDataTabButton.text);
+                  hexText.text = QHexConvertor.getHexData(tableDataTabButton.text);
                 }
             }
 
@@ -320,10 +307,7 @@ Window {
             columnSpacing: 1
             rowSpacing: 1
             clip: true
-            model: RAWDataTable {
-                id: rawTablelContentModel
-            }
-
+            model: RAWDataTable
             delegate: Rectangle {
                 id: rawTableRowTextField
                 color: "#CEDCDD"
@@ -350,7 +334,7 @@ Window {
                         id: dataLable
                         width: 151
                         height: 26
-                        text: rawTablelContentModel.headerData(modelData, Qt.Horizontal)
+                        text: RAWDataTable.headerData(modelData, Qt.Horizontal)
                         color: '#333333'
                         padding: 10
                         verticalAlignment: Text.AlignVCenter
@@ -394,5 +378,23 @@ Window {
             s = urlString
         }
         return decodeURIComponent(s);
+    }
+
+    function reloadTargetTab()
+    {
+        if(bar.currentIndex == 0)
+        {
+            tablelContentMode.setDataBase(tableDataTabButton.text)
+        }
+
+        if(bar.currentIndex == 1)
+        {
+            RAWDataTable.setDataBase(tableDataTabButton.text);
+        }
+
+        if(bar.currentIndex == 2)
+        {
+            hexText.text = QHexConvertor.getHexData(tableDataTabButton.text);
+        }
     }
 }

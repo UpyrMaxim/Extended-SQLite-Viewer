@@ -3,9 +3,10 @@
 #include <QtSql>
 #include <QDebug>
 
-RAWDataTable::RAWDataTable(QObject *parent)
-    : QAbstractTableModel(parent)
+
+RAWDataTable::RAWDataTable(RawDataBaseParserWrapper *RawDB, QObject *parent) : QAbstractTableModel(parent), m_RawDataObj(RawDB)
 {
+
 }
 
 QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
@@ -42,15 +43,17 @@ QVariant RAWDataTable::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-void RAWDataTable::setDataBase(const QString &dbPath, const QString &TableName)
+void RAWDataTable::setDataBase(const QString TableName)
 {
-    resetRawDataBaseObject(dbPath.toLocal8Bit().data());
-    std::vector<std::string> types;
-    tableName = TableName.toLocal8Bit().data();
-    getTypesList(types);
-    beginResetModel();
-    deletedContent = m_rawData->get_parsed_data(TableName.toLocal8Bit().data(), types);
-    endResetModel();
+     if(m_RawDataObj->getRawDataBaseObject() && TableName.size()){
+        std::vector<std::string> types;
+        tableName = TableName.toLocal8Bit().data();
+        getTypesList(types);
+        beginResetModel();
+        deletedContent = m_RawDataObj->getRawDataBaseObject()->get_parsed_data(tableName.c_str(), types);
+        qDebug() << "after get setDataBase";
+        endResetModel();
+    }
 }
 
 void RAWDataTable::getTypesList(std::vector<std::string> & outPut)
@@ -64,6 +67,7 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut)
 
 std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
 {
+    qDebug() << TypeName;
     if(TypeName == "int")
         return  "INT";
     if(TypeName == "QString")
@@ -75,15 +79,3 @@ std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
     // просто набор байтиков :)
     return "BLOB";
 }
-
-void RAWDataTable::resetRawDataBaseObject(const std::string& dbPath)
-{
-    if(m_rawData != nullptr)
-    {
-         delete m_rawData;
-    }
-    m_rawData = new Database();
-    m_rawData->reset_path(dbPath);
-    m_rawData->parse_database();
-}
-

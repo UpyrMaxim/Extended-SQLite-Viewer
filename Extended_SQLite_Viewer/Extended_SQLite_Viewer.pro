@@ -20,6 +20,7 @@ SOURCES += \
         qhexconvertor.cpp \
         qsqlitemodel.cpp \
         qsqlitetablelist.cpp \
+        rawdatabaseparserwrapper.cpp \
         rawdatatable.cpp
 
 RESOURCES += qml.qrc
@@ -40,6 +41,7 @@ HEADERS += \
     qhexconvertor.h \
     qsqlitemodel.h \
     qsqlitetablelist.h \
+    rawdatabaseparserwrapper.h \
     rawdatatable.h
 
 
