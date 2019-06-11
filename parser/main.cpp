@@ -13,16 +13,16 @@ int main() {
     for (auto it : db->get_tables_pages()){
         std::cout << "You have table " << it.first << std::endl;
     }
-    auto data = db->get_all_raw_deleted_data();
-    for (auto page : data){
-        std::cout << "Data from page " << page.first << std::endl;
-        for (auto freeblock : page.second){
-            for (auto byte : freeblock){
-                std::cout << byte;
-            }
-            std::cout << std::endl;
-        }
-    }
+//    auto data = db->get_all_raw_deleted_data();
+//    for (auto page : data){
+//        std::cout << "Data from page " << page.first << std::endl;
+//        for (auto freeblock : page.second){
+//            for (auto byte : freeblock){
+//                std::cout << byte;
+//            }
+//            std::cout << std::endl;
+//        }
+//    }
 
     auto raw_data = db->get_raw_data("test");
 

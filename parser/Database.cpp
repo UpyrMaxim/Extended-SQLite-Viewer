@@ -97,6 +97,7 @@ void Database::scan_freeblocks() {
     for (int it = 0;it < db_header->get_pages_amount(); it++){
         parse_page(it);
     }
+//    buffer.clear();
 
 //    for (auto &it : deleted_data) {
 //        for (auto &i : it.second) {
@@ -196,6 +197,10 @@ std::vector<std::vector<uint8_t >> Database::get_deleted_data_from_table(std::st
         std::cout << "table: "<< table_name << std::endl;
         std::cout << "no table with that name" << std::endl;
     };
+    for (auto number : tables_pages[table_name]){
+            parse_page(number - 1);
+    }
+
     for (auto it : tables_pages[table_name]){
         for (auto i : deleted_data[it]) {
             deleted_data_from_table.emplace_back(i);
@@ -213,7 +218,7 @@ std::map<int,std::vector<std::vector<uint8_t>>> Database::get_all_raw_deleted_da
 
 
 void Database::parse_database() {
-scan_freeblocks();
+//scan_freeblocks();
 identify_tables();
 }
 
