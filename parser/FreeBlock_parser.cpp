@@ -50,10 +50,11 @@ std::vector<std::pair<std::string,std::string>> FreeBlock_parser::parse_free_blo
     std::vector<std::pair<std::string,std::string>> data_from_freeblock;
     unsigned long unreaded_data_offset = 0;
     std::vector<uint8_t > sliced_cell = freeblock;
-    while ( ( unreaded_data_offset + types_sequense.size()  ) < sliced_cell.size()) {
-        sliced_cell = std::vector<uint8_t>(freeblock.begin() + unreaded_data_offset, freeblock.end());
+    int cell_start = 1;
+    while ( sliced_cell.size() > types_sequense.size() * 2  ) {
+        sliced_cell = std::vector<uint8_t>(sliced_cell.begin() + unreaded_data_offset, sliced_cell.end());
         auto types = types_sequense;
-        auto cell_start = find_types_values_match(sliced_cell, types);
+        cell_start = find_types_values_match(sliced_cell, types);
         if (cell_start == 0) {
             types = std::vector<std::string>(types.begin() + 1, types.end());
             cell_start = find_types_values_match(sliced_cell, types);
