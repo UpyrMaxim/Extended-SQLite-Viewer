@@ -3,30 +3,10 @@
 
 #include <QObject>
 #include <QString>
-#include <fstream>
 #include <memory>
 #include <vector>
 #include <Database.h>
 #include "rawdatabaseparserwrapper.h"
-
-
-class SimpleFileGuard {
-public:
-    SimpleFileGuard(std::ifstream &file) : fileUnderProtect(&file) { }
-    std::ifstream &getFile() {
-        return *fileUnderProtect;
-    }
-
-    ~SimpleFileGuard() {
-        if (fileUnderProtect != nullptr)
-        {
-            fileUnderProtect->close();
-        }
-    }
-
-private:
-    std::ifstream *fileUnderProtect;
-};
 
 class QHexConvertor : public QObject
 {

@@ -6,7 +6,7 @@ QSQLiteTableList::QSQLiteTableList(QObject *parent)
 {
 }
 
-QVariant QSQLiteTableList::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant QSQLiteTableList::headerData(int, Qt::Orientation, int) const
 {
     return "Tables";
 }

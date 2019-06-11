@@ -100,13 +100,18 @@ Window {
                 width: parent.width
 
                 TextField {
+                    id: tableListItem
                     readOnly: true
                     text: display
                     Layout.fillWidth: true
-                    //Font.bold: display == activeTable
-
                     background: Rectangle {
-                        color: mouseArea.containsMouse ? "#CEDCDD" : "#cedcec"
+                        color:{
+                            if(mouseArea.containsMouse)
+                                return  "#CEDCDD"
+                            if(tableListItem.text == tableDataTabButton.text)
+                                return "#CEDC0F"
+                            return "#cedcec"
+                        }
                     }
                     MouseArea {
                         id: mouseArea
@@ -135,7 +140,7 @@ Window {
             console.log("converted to : " + urlToPath(fileDialog.fileUrls.toString()));
             QHexConvertor.resetRawDB(urlToPath(fileDialog.fileUrls.toString()));
             tableListModel.setDataBase(urlToPath(fileDialog.fileUrls.toString()));
-           // reloadTargetTab();
+            //reloadTargetTab();
         }
         onRejected: {
             console.log("Canceled")

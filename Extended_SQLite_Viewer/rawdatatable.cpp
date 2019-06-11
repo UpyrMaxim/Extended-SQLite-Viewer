@@ -9,7 +9,7 @@ RAWDataTable::RAWDataTable(RawDataBaseParserWrapper *RawDB, QObject *parent) : Q
 
 }
 
-QVariant RAWDataTable::headerData(int section, Qt::Orientation orientation, int role) const
+QVariant RAWDataTable::headerData(int section, Qt::Orientation, int) const
 {
     return DBaseSingleton::getInstance().record(tableName.c_str()).fieldName(section);
 }
@@ -30,7 +30,7 @@ int RAWDataTable::columnCount(const QModelIndex &parent) const
     // FIXME: Implement me!
 }
 
-QVariant RAWDataTable::data(const QModelIndex &index, int role) const
+QVariant RAWDataTable::data(const QModelIndex &index, int) const
 {
     if(deletedContent.size() > static_cast<size_t>(index.row()) && index.isValid())
     {
@@ -50,7 +50,9 @@ void RAWDataTable::setDataBase(const QString TableName)
         tableName = TableName.toLocal8Bit().data();
         getTypesList(types);
         beginResetModel();
+        qDebug() <<  " objPointre "<<m_RawDataObj->getRawDataBaseObject();
         deletedContent = m_RawDataObj->getRawDataBaseObject()->get_parsed_data(tableName.c_str(), types);
+        //deletedContent = {{"test1","test1_1","test_1_2"},{"test2","test2_1","test_2_2"},{"test3","test3_1","test_3_2"}};
         qDebug() << "after get setDataBase";
         endResetModel();
     }

@@ -29,7 +29,7 @@ QString QHexConvertor::getHexData(const QString TableName)
 
 void QHexConvertor::resetRawDB(const QString path)
 {
-    auto pathStr = path.toUtf8().data();
+    std::string pathStr = path.toUtf8().data();
     m_RawDataObj->resetRawDataBase(pathStr);
 }
 

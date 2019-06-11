@@ -228,16 +228,23 @@ std::vector<std::vector<uint8_t > > Database::get_raw_data(std::string table_nam
 }
 
 std::vector<std::vector<std::string>> Database::get_parsed_data(const std::string &table_name, std::vector<std::string> type_sequance) {
+    std::cout << " start " << std::endl;
     auto data = get_deleted_data_from_table(table_name);
+    std::cout << "after get_deleted_data_from_table" << std::endl;
     std::vector<std::vector<std::string >>  values;
     for (auto &freeblock : data){
+        std::cout << "before parse_free_block" << std::endl;
         auto pair_vector = FreeBlock_parser::parse_free_block(freeblock, type_sequance);
+        std::cout << " parse_free_block" << std::endl;
+        std::cout << data.size() << std::endl;
+
         std::vector<std::string> string_vector;
         for (auto pair : pair_vector){
             string_vector.push_back(pair.second);
         }
         values.push_back(string_vector);
     }
+    std::cout << " end " << std::endl;
     return values;
 }
 
