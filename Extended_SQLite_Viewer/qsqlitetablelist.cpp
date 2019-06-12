@@ -25,19 +25,21 @@ int QSQLiteTableList::rowCount(const QModelIndex &parent) const
 QVariant QSQLiteTableList::data(const QModelIndex &index, int role) const
 {
     if (!index.isValid())
-        return QVariant();
+         return QVariant();
 
-    switch (role)
-    {
-           case Qt::DisplayRole:
-             if(DBaseSingleton::getInstance().tables().size() < index.row())
-             {
-               return DBaseSingleton::getInstance().tables().at(index.row());
-             }
-             break;
-           default:
-             break;
-    }
+     switch (role)
+     {
+            case Qt::DisplayRole:
+              if(DBaseSingleton::getInstance().tables().size())
+              {
+                return DBaseSingleton::getInstance().tables().at(index.row());
+              } else {
+                  return "test";
+              }
+            default:
+                break;
+     }
+
     return QVariant();
 }
 
