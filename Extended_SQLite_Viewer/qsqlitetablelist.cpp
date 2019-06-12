@@ -13,8 +13,6 @@ QVariant QSQLiteTableList::headerData(int, Qt::Orientation, int) const
 
 int QSQLiteTableList::rowCount(const QModelIndex &parent) const
 {
-    // For list models only the root node (an invalid parent) should return the list's size. For all
-    // other (valid) parents, rowCount() should return 0 so that it does not become a tree model.
     if (parent.isValid())
         return 0;
     if(dataBaseActive)
@@ -32,14 +30,13 @@ QVariant QSQLiteTableList::data(const QModelIndex &index, int role) const
     switch (role)
     {
            case Qt::DisplayRole:
-             if(DBaseSingleton::getInstance().tables().size())
+             if(DBaseSingleton::getInstance().tables().size() < index.row())
              {
                return DBaseSingleton::getInstance().tables().at(index.row());
-             } else {
-                 return "test";
              }
+             break;
            default:
-               break;
+             break;
     }
     return QVariant();
 }

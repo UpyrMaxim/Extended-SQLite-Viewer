@@ -9,7 +9,6 @@ QHexConvertor::QHexConvertor(RawDataBaseParserWrapper * RawData, QObject *parent
 
 QString QHexConvertor::getHexData(const QString TableName)
 {
-    qDebug() << "Get Hex " <<TableName.size() ;
     if(TableName.size())
     {
         QByteArray bitArray;
@@ -63,8 +62,8 @@ void QHexConvertor::loadBynaryData(QByteArray &bitArray, const std::string& Tabl
 
 void QHexConvertor::convertToHexView(const QByteArray &bitArray, QString& resultStr)
 {
-    int baseStep = 3;
-    int byteInLine = 16;
+    const int baseStep = 3;
+    const int byteInLine = 16;
     int stepModif = byteInLine * baseStep;
     int bytePos = 0;
 
@@ -86,4 +85,9 @@ void QHexConvertor::convertToHexView(const QByteArray &bitArray, QString& result
             bytesLineStringView.clear();
         }
     }
+}
+
+RawDataBaseParserWrapper *QHexConvertor::getRawDataObj()
+{
+    return m_RawDataObj;
 }

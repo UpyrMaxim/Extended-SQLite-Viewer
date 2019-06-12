@@ -6,8 +6,6 @@ import QtQuick.Layouts 1.3
 
 import SQliteModel 1.0
 import SQliteTableList 1.0
-//import QHexConvertor 1.0
-//import RAWDataTable 1.0
 
 
 

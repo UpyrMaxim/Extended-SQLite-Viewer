@@ -8,6 +8,7 @@
 #include <Database.h>
 #include "rawdatabaseparserwrapper.h"
 
+
 class QHexConvertor : public QObject
 {
     Q_OBJECT
@@ -20,13 +21,14 @@ public:
 signals:
 
 public slots:
-private:
+protected:
     char byteToCHarView(char);
     void loadBynaryData(QByteArray&,const std::string&);
     void convertToHexView(const QByteArray&, QString&);
+    RawDataBaseParserWrapper *getRawDataObj();
 
 
-private:
+protected:
     RawDataBaseParserWrapper * m_RawDataObj;
 };
 

@@ -17,7 +17,7 @@ QSQLiteModel::~QSQLiteModel()
 
 QVariant QSQLiteModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if(role == Qt::DisplayRole && orientation == Qt::Horizontal)
+    if(role == Qt::DisplayRole && orientation == Qt::Horizontal && section < TableData.size())
     {
          return  TableData.at(section);
     }
@@ -47,7 +47,7 @@ int QSQLiteModel::columnCount(const QModelIndex &parent) const
     return QSqlQueryModel::record().count();
 }
 
-QVariant QSQLiteModel::data(const QModelIndex &index, int role) const // в теорії получаєш дані за індексом
+QVariant QSQLiteModel::data(const QModelIndex &index, int role) const
 {
    if (!index.isValid())
         return QVariant();
@@ -71,7 +71,7 @@ Qt::ItemFlags QSQLiteModel::flags(const QModelIndex &index) const
     if (!index.isValid())
         return Qt::NoItemFlags;
 
-    return Qt::ItemIsEditable; // FIXME: Implement me!
+    return Qt::ItemIsEditable;
 }
 
 bool QSQLiteModel::setTableContent()

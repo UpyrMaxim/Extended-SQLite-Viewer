@@ -29,10 +29,13 @@ private:
     std::string tableName;
     RawDataBaseParserWrapper *m_RawDataObj;
 
-private:
+protected:
     std::vector<std::vector<std::string >> deletedContent;
     void getTypesList(std::vector<std::string>&);
     std::string convertQTTypetoSQLType(const QString &);
+    // необходимо для тестов
+    RawDataBaseParserWrapper* getRawDataObj();
+    void setTableData(std::string&);
 };
 
 #endif // RAWDATATABLE_H

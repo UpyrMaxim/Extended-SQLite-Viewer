@@ -1,3 +1,4 @@
+QT += core
 QT += quick
 QT += sql
 

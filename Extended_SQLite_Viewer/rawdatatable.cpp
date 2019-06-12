@@ -50,10 +50,7 @@ void RAWDataTable::setDataBase(const QString TableName)
         tableName = TableName.toLocal8Bit().data();
         getTypesList(types);
         beginResetModel();
-        qDebug() <<  " objPointre "<<m_RawDataObj->getRawDataBaseObject();
         deletedContent = m_RawDataObj->getRawDataBaseObject()->get_parsed_data(tableName.c_str(), types);
-        //deletedContent = {{"test1","test1_1","test_1_2"},{"test2","test2_1","test_2_2"},{"test3","test3_1","test_3_2"}};
-        qDebug() << "after get setDataBase";
         endResetModel();
     }
 }
@@ -69,7 +66,6 @@ void RAWDataTable::getTypesList(std::vector<std::string> & outPut)
 
 std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
 {
-    qDebug() << TypeName;
     if(TypeName == "int")
         return  "INT";
     if(TypeName == "QString")
@@ -78,6 +74,19 @@ std::string RAWDataTable::convertQTTypetoSQLType(const QString &TypeName)
         return "FLOAT";
     if(TypeName == "double")
         return "FLOAT";
-    // просто набор байтиков :)
+
+    // в остальных случаях воспринимать как последовательность битов
     return "BLOB";
 }
+
+RawDataBaseParserWrapper* RAWDataTable::getRawDataObj()
+{
+    return m_RawDataObj;
+}
+
+void RAWDataTable::setTableData(std::string &tName)
+{
+    tableName = tName;
+}
+
+

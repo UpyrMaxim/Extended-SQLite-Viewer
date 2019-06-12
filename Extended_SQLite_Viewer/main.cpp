@@ -1,10 +1,6 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext> // для передачи модели в qml
-#include <QSqlDatabase>
-#include <QtQuick/QQuickWindow>
-#include <QSqlQuery>
-#include <QSqlError>
 #include <QFontDatabase>
 
 #include "qsqlitetablelist.h"
@@ -33,7 +29,6 @@ int main(int argc, char *argv[])
             QCoreApplication::exit(-1);
     }, Qt::QueuedConnection);
 
-    // общие данные
     std::vector<RawDataBaseParserWrapper*> RDBParser;
     RDBParser.emplace_back(new RawDataBaseParserWrapper());
 
@@ -42,10 +37,6 @@ int main(int argc, char *argv[])
 
     engine.rootContext()->setContextProperty(QString("QHexConvertor"), &hexConvertor);
     engine.rootContext()->setContextProperty(QString("RAWDataTable"), &rawDataTable);
-
-//    qmlRegisterType<QHexConvertor>("QHexConvertor", 1, 0, "QHexConvertor");
-//    qmlRegisterType<RAWDataTable>("RAWDataTable", 1, 0, "RAWDataTable");
-
 
     const QFont fixedFont = QFontDatabase::systemFont(QFontDatabase::FixedFont);
     engine.rootContext()->setContextProperty("fixedFont", fixedFont);
