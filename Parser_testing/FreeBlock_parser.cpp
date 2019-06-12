@@ -17,7 +17,7 @@ int FreeBlock_parser::to_little_endian (std::vector<uint8_t> &big_endian, int si
 }
 
 bool FreeBlock_parser::compare_values_with_type (int value, std::string type){
-    if ((type == "INT") && ((value >  0 && value <= 6))) return true;
+    if ((type == "INT") && ((value >= 0 && value <= 6) || (value == 0))) return true;
     if ((type == "FLOAT") && (value == 7 || value == 0)) return true;
     return (((type == "TEXT") || (type == "BLOB")) && (value > 12));
 };
